@@ -1,0 +1,2227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff">
+<title>TITAN — ClinicFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+:root {
+  --white:      #ffffff;
+  --off-white:  #f5f5f7;
+  --surface:    #fbfbfd;
+  --border:     #e8e8ed;
+  --border2:    #d2d2d7;
+  --ink:        #1d1d1f;
+  --ink2:       #424245;
+  --ink3:       #6e6e73;
+  --ink4:       #aeaeb2;
+  --blue:       #0071e3;
+  --blue-soft:  rgba(0,113,227,0.08);
+  --blue-mid:   rgba(0,113,227,0.15);
+  --green:      #28cd41;
+  --green-soft: rgba(40,205,65,0.1);
+  --yellow:     #ff9f0a;
+  --yellow-soft:rgba(255,159,10,0.1);
+  --red:        #ff3b30;
+  --red-soft:   rgba(255,59,48,0.08);
+  --sans:       'DM Sans', -apple-system, sans-serif;
+  --mono:       'DM Mono', 'SF Mono', monospace;
+  --radius:     12px;
+  --radius-sm:  8px;
+  --radius-xs:  6px;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow:     0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-lg:  0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06);
+  --nav-h:      56px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html { height: 100%; }
+
+body {
+  background: var(--off-white);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 0; height: 0; }
+
+/* ── APP SHELL ── */
+.app { display: flex; height: 100vh; height: 100dvh; overflow: hidden; }
+
+/* ── SIDEBAR (desktop) ── */
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.sidebar-logo {
+  padding: 28px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-wordmark {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+}
+
+.logo-wordmark span { color: var(--blue); }
+
+.logo-sub {
+  font-size: 11px;
+  color: var(--ink4);
+  margin-top: 1px;
+  letter-spacing: 0.2px;
+}
+
+.sidebar-section {
+  padding: 20px 20px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--ink4);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  margin: 1px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--ink2);
+  font-size: 14px;
+  font-weight: 450;
+  transition: background 0.15s, color 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+}
+
+.nav-item:hover { background: rgba(0,0,0,0.04); color: var(--ink); }
+
+.nav-item.active {
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-weight: 500;
+}
+
+.nav-icon {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-xs);
+  font-size: 14px;
+  flex-shrink: 0;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+.nav-item.active .nav-icon { background: var(--blue-mid); }
+
+.nav-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 20px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.badge-red-pill    { background: var(--red);    color: white; }
+.badge-yellow-pill { background: var(--yellow); color: white; }
+.badge-blue-pill   { background: var(--blue);   color: white; }
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+}
+
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.user-row:hover { background: var(--off-white); }
+
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.user-name  { font-size: 14px; font-weight: 500; color: var(--ink); }
+.user-role  { font-size: 11px; color: var(--ink4); }
+
+.logout-link {
+  margin-top: 6px;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  color: var(--red);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+
+.logout-link:hover { background: var(--red-soft); }
+
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+.topbar {
+  height: 52px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 12px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  flex: 1;
+  letter-spacing: -0.2px;
+}
+
+.health-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.health-chip.green  { background: var(--green-soft);  color: #1a8a2e; }
+.health-chip.yellow { background: var(--yellow-soft); color: #b36400; }
+.health-chip.red    { background: var(--red-soft);    color: #cc2f26; }
+
+.health-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+.green  .health-dot { background: var(--green); }
+.yellow .health-dot { background: var(--yellow); }
+.red    .health-dot { background: var(--red); animation: blink 1s infinite; }
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.topbar-time {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink4);
+  letter-spacing: 0.3px;
+}
+
+/* ── CONTENT ── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.card-body { padding: 20px; }
+.card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-title { font-size: 14px; font-weight: 600; color: var(--ink); }
+.card-meta  { font-size: 12px; color: var(--ink4); }
+
+/* ── STAT GRID ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.stat-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink4);
+  margin-bottom: 6px;
+  letter-spacing: 0.1px;
+}
+
+.stat-value {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.stat-value.blue   { color: var(--blue); }
+.stat-value.green  { color: var(--green); }
+.stat-value.yellow { color: var(--yellow); }
+.stat-value.red    { color: var(--red); }
+
+.stat-sub { font-size: 11px; color: var(--ink4); margin-top: 4px; }
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+}
+
+/* ── TABLES ── */
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; }
+
+th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink4);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--ink);
+  vertical-align: middle;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--off-white); }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+}
+
+.badge-blue   { background: var(--blue-soft);   color: var(--blue); }
+.badge-green  { background: var(--green-soft);  color: #1a8a2e; }
+.badge-yellow { background: var(--yellow-soft); color: #b36400; }
+.badge-red    { background: var(--red-soft);    color: #cc2f26; }
+.badge-gray   { background: var(--off-white);   color: var(--ink3); border: 1px solid var(--border); }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--blue);
+  color: white;
+}
+.btn-primary:hover { background: #0077ed; }
+
+.btn-secondary {
+  background: var(--off-white);
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--border); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink3);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--off-white); color: var(--ink); }
+
+.btn-danger {
+  background: var(--red-soft);
+  color: var(--red);
+  border: 1px solid rgba(255,59,48,0.2);
+}
+.btn-danger:hover { background: rgba(255,59,48,0.15); }
+
+.btn-success {
+  background: var(--green-soft);
+  color: #1a8a2e;
+  border: 1px solid rgba(40,205,65,0.2);
+}
+.btn-success:hover { background: rgba(40,205,65,0.18); }
+
+.btn-sm { padding: 5px 10px; font-size: 12px; border-radius: var(--radius-xs); }
+
+.btn-icon {
+  width: 32px; height: 32px;
+  padding: 0;
+  border-radius: var(--radius-xs);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  color: var(--ink3);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 14px;
+}
+
+.btn-icon:hover { background: var(--border); color: var(--ink); }
+.btn-icon:active { transform: scale(0.93); }
+
+/* ── FORMS ── */
+.form-group { margin-bottom: 16px; }
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink2);
+  margin-bottom: 6px;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--white);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(0,113,227,0.12);
+}
+
+.form-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23aeaeb2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.form-textarea { resize: vertical; min-height: 88px; line-height: 1.5; }
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--off-white);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  margin-bottom: 20px;
+  width: fit-content;
+}
+
+.tab {
+  padding: 6px 14px;
+  border-radius: var(--radius-xs);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink3);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.tab:hover { color: var(--ink2); }
+
+.tab.active {
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+  padding: 0;
+  animation: fadeIn 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .modal-overlay { align-items: center; padding: 20px; }
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@media (min-width: 640px) {
+  .modal {
+    border-radius: var(--radius);
+    padding: 28px;
+    animation: scaleIn 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.modal-handle {
+  width: 36px; height: 4px;
+  background: var(--border2);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+@media (min-width: 640px) { .modal-handle { display: none; } }
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 20px;
+  letter-spacing: -0.3px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── LOGIN ── */
+.login-page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--off-white);
+  padding: 20px;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 360px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 32px;
+  box-shadow: var(--shadow-lg);
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.login-mark {
+  width: 60px; height: 60px;
+  background: var(--blue);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  font-size: 24px;
+  font-weight: 800;
+  color: white;
+  font-family: var(--sans);
+  letter-spacing: -1px;
+  box-shadow: 0 8px 24px rgba(0,113,227,0.3);
+}
+
+.login-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+}
+
+.login-sub {
+  font-size: 13px;
+  color: var(--ink4);
+  margin-top: 3px;
+}
+
+.login-error {
+  background: var(--red-soft);
+  border: 1px solid rgba(255,59,48,0.2);
+  border-radius: var(--radius-sm);
+  color: #cc2f26;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+/* ── PROGRESS ── */
+.progress-track {
+  height: 6px;
+  background: var(--off-white);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 3px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-fill.done { background: var(--green); }
+
+/* ── CHECKLIST ── */
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+  border-radius: var(--radius-xs);
+  padding-left: 4px;
+}
+
+.check-row:last-child { border-bottom: none; }
+.check-row:hover { background: var(--off-white); }
+
+.check-box {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  font-size: 10px;
+}
+
+.check-box.done {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+.check-text { font-size: 13px; color: var(--ink); }
+.check-text.done { color: var(--ink4); text-decoration: line-through; }
+
+/* ── EMPTY STATE ── */
+.empty {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--ink4);
+}
+
+.empty-icon { font-size: 32px; margin-bottom: 10px; opacity: 0.5; }
+.empty-text { font-size: 14px; }
+
+/* ── LOADING ── */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  gap: 10px;
+  color: var(--ink4);
+  font-size: 14px;
+}
+
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid var(--border2);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── TOAST ── */
+.toasts {
+  position: fixed;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+  width: min(380px, calc(100vw - 32px));
+}
+
+.toast {
+  padding: 12px 16px;
+  background: rgba(29,29,31,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: white;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  animation: toastIn 0.3s cubic-bezier(0.32,0.72,0,1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+  width: 100%;
+}
+
+.toast.error   { background: rgba(204,47,38,0.92); }
+.toast.success { background: rgba(26,138,46,0.92); }
+
+@keyframes toastIn {
+  from { transform: translateY(8px); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+/* ── GRID ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+
+/* ── CHANNEL PILLS ── */
+.channel-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.channel-pill {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--border2);
+  background: var(--white);
+  color: var(--ink3);
+  cursor: pointer;
+  transition: all 0.15s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.channel-pill:hover { border-color: var(--blue); color: var(--blue); }
+.channel-pill.active { background: var(--blue); border-color: var(--blue); color: white; }
+
+/* ── INTERACTION ROW ── */
+.int-row {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+
+.int-row:last-child { border-bottom: none; }
+.int-user  { font-size: 11px; color: var(--blue); font-weight: 600; width: 72px; flex-shrink: 0; font-family: var(--mono); }
+.int-text  { flex: 1; font-size: 12px; color: var(--ink2); word-break: break-word; line-height: 1.4; }
+.int-badge { flex-shrink: 0; }
+
+/* ── PATTERN ROW ── */
+.pattern-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pattern-row:last-child { border-bottom: none; }
+.pattern-trigger { color: var(--ink); font-size: 13px; font-family: var(--mono); flex: 1; }
+.pattern-arrow   { color: var(--ink4); font-size: 12px; }
+.pattern-intent  { color: var(--blue); font-size: 13px; width: 110px; font-family: var(--mono); }
+.pattern-count   { color: var(--ink4); font-size: 11px; width: 50px; text-align: right; }
+
+/* ── ACTION ROW ── */
+.action-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+
+.action-row:last-child { border-bottom: none; }
+.action-row:hover { background: var(--off-white); }
+.action-icon { font-size: 22px; width: 40px; text-align: center; flex-shrink: 0; }
+.action-info { flex: 1; }
+.action-title { font-size: 14px; font-weight: 500; color: var(--ink); }
+.action-desc  { font-size: 12px; color: var(--ink4); margin-top: 1px; }
+
+/* ── CMD GRID ── */
+.cmd-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 24px 0 10px;
+}
+
+.cmd-section-title:first-child { margin-top: 0; }
+
+.cmd-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.cmd-row:last-child { border-bottom: none; }
+
+.cmd-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--blue);
+  width: 180px;
+  flex-shrink: 0;
+  word-break: break-all;
+}
+
+.cmd-desc { font-size: 13px; color: var(--ink2); flex: 1; line-height: 1.4; }
+.cmd-detail {
+  font-size: 12px;
+  color: var(--ink4);
+  margin-top: 4px;
+  padding: 8px 10px;
+  background: var(--off-white);
+  border-radius: var(--radius-xs);
+  border-left: 2px solid var(--blue);
+}
+
+/* ── MOBILE BOTTOM NAV ── */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  z-index: 200;
+  justify-content: space-around;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 8px;
+  min-width: 52px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  position: relative;
+}
+
+.bottom-nav-icon {
+  font-size: 22px;
+  line-height: 1;
+  transition: transform 0.15s;
+}
+
+.bottom-nav-item.active .bottom-nav-icon { transform: scale(1.1); }
+
+.bottom-nav-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink4);
+  transition: color 0.15s;
+}
+
+.bottom-nav-item.active .bottom-nav-label { color: var(--blue); }
+
+.bottom-nav-dot {
+  position: absolute;
+  top: 2px; right: 10px;
+  width: 8px; height: 8px;
+  background: var(--red);
+  border-radius: 50%;
+  border: 1.5px solid white;
+}
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+
+  .bottom-nav { display: flex; }
+
+  .main { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
+
+  .content {
+    padding: 16px;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+
+  .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: repeat(2,1fr); }
+
+  .topbar { padding: 0 16px; }
+  .topbar-time { display: none; }
+
+  .section-title { font-size: 20px; }
+
+  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
+
+  td, th { padding: 10px 12px; font-size: 12px; }
+
+  .cmd-name { width: 130px; }
+
+  .modal { max-height: 85vh; }
+}
+
+@media (max-width: 480px) {
+  .stat-grid { grid-template-columns: repeat(2,1fr); gap: 8px; }
+  .stat-value { font-size: 26px; }
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── UPTIME CARD ── */
+.uptime-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.uptime-indicator {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.uptime-indicator.up      { background: var(--green); box-shadow: 0 0 8px rgba(40,205,65,0.4); animation: blink 3s infinite; }
+.uptime-indicator.down    { background: var(--red);   box-shadow: 0 0 8px rgba(255,59,48,0.4); animation: blink 0.8s infinite; }
+.uptime-indicator.checking { background: var(--yellow); animation: blink 1.2s infinite; }
+
+/* ── BAR CHART ── */
+.bar-chart { display: flex; flex-direction: column; gap: 8px; }
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bar-label { font-size: 12px; color: var(--ink3); width: 110px; flex-shrink: 0; font-family: var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { flex: 1; height: 6px; background: var(--off-white); border-radius: 3px; overflow: hidden; }
+.bar-fill  { height: 100%; background: var(--blue); border-radius: 3px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+.bar-fill.green { background: var(--green); }
+.bar-count { font-size: 12px; color: var(--ink4); width: 28px; text-align: right; font-family: var(--mono); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef } = React;
+
+// ── API ──────────────────────────────────
+const api = {
+  token: localStorage.getItem('tt'),
+  setToken(t)   { this.token = t; localStorage.setItem('tt', t); },
+  clearToken()  { this.token = null; localStorage.removeItem('tt'); },
+  async req(method, path, body) {
+    const res = await fetch(path, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {})
+      },
+      ...(body != null ? { body: JSON.stringify(body) } : {})
+    });
+    if (res.status === 401) { this.clearToken(); window.location.reload(); return; }
+    return res.json();
+  },
+  get:    p    => api.req('GET', p),
+  post:   (p,b)=> api.req('POST', p, b),
+  patch:  (p,b)=> api.req('PATCH', p, b),
+  delete: p    => api.req('DELETE', p),
+};
+
+// ── TOAST ────────────────────────────────
+let _setToasts = null;
+function Toasts() {
+  const [list, setList] = useState([]);
+  _setToasts = setList;
+  return (
+    <div className="toasts">
+      {list.map(t => <div key={t.id} className={`toast ${t.type}`}>{t.icon} {t.msg}</div>)}
+    </div>
+  );
+}
+function toast(msg, type = 'info') {
+  if (!_setToasts) return;
+  const icons = { success:'✓', error:'✕', info:'·' };
+  const id = Date.now();
+  _setToasts(p => [...p, { id, msg, type, icon: icons[type] }]);
+  setTimeout(() => _setToasts(p => p.filter(x => x.id !== id)), 3000);
+}
+
+// ── CLOCK ────────────────────────────────
+function Clock() {
+  const [t, setT] = useState(new Date());
+  useEffect(() => { const i = setInterval(() => setT(new Date()), 1000); return () => clearInterval(i); }, []);
+  return <span className="topbar-time">{t.toLocaleTimeString('en-US', { timeZone:'America/El_Salvador', hour12:false })}</span>;
+}
+
+// ── LOGIN ────────────────────────────────
+function Login({ onLogin }) {
+  const [u, setU] = useState('');
+  const [p, setP] = useState('');
+  const [err, setErr] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e) {
+    e.preventDefault();
+    setLoading(true); setErr('');
+    try {
+      const r = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify({ username: u, password: p })
+      });
+      const d = await r.json();
+      if (d.token) { api.setToken(d.token); onLogin(d); }
+      else setErr(d.error || 'Authentication failed');
+    } catch { setErr('Connection error. Try again.'); }
+    setLoading(false);
+  }
+
+  return (
+    <div className="login-page">
+      <div className="login-box">
+        <div className="login-logo">
+          <div className="login-mark">T</div>
+          <div className="login-title">TITAN</div>
+          <div className="login-sub">ClinicFlow Operations</div>
+        </div>
+        {err && <div className="login-error">⚠ {err}</div>}
+        <form onSubmit={submit}>
+          <div className="form-group">
+            <label className="form-label">Username</label>
+            <input className="form-input" value={u} onChange={e => setU(e.target.value)} placeholder="operator id" autoFocus autoCapitalize="none" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Password</label>
+            <input className="form-input" type="password" value={p} onChange={e => setP(e.target.value)} placeholder="••••••••" />
+          </div>
+          <button className="btn btn-primary" style={{width:'100%', justifyContent:'center', padding:'12px'}} disabled={loading}>
+            {loading ? 'Signing in…' : 'Sign in →'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ── OVERVIEW ─────────────────────────────
+function Overview() {
+  const [d, setD] = useState(null);
+  const [up, setUp] = useState({ status:'checking' });
+  const load = () => api.get('/api/overview').then(setD);
+  useEffect(() => { load(); api.get('/api/uptime').then(setUp); }, []);
+
+  if (!d) return <div className="loading"><div className="spinner"/>Loading…</div>;
+
+  return (
+    <div>
+      <div className="section-header">
+        <h1 className="section-title">Overview</h1>
+        <button className="btn-icon" onClick={load} title="Refresh">↻</button>
+      </div>
+
+      {/* Health + Uptime */}
+      <div className="card" style={{marginBottom:16}}>
+        <div className="card-body" style={{display:'flex', alignItems:'center', gap:20, flexWrap:'wrap'}}>
+          <div style={{flex:1, minWidth:200}}>
+            <div style={{fontSize:12, color:'var(--ink4)', marginBottom:4}}>System Health</div>
+            <div style={{fontSize:24, fontWeight:700, letterSpacing:'-0.5px', color: d.health==='green' ? 'var(--green)' : d.health==='yellow' ? 'var(--yellow)' : 'var(--red)'}}>
+              {d.health === 'green' ? 'All Good' : d.health === 'yellow' ? 'Needs Attention' : 'Critical Issues'}
+            </div>
+            <div style={{fontSize:13, color:'var(--ink4)', marginTop:2}}>
+              {d.health==='green' ? 'Board is healthy. Keep shipping.' : d.health==='yellow' ? `${d.blockedTasks} blocked, ${d.openBugs} bugs open.` : `${d.criticalBugs} critical bug${d.criticalBugs>1?'s':''} — act now.`}
+            </div>
+          </div>
+          <div className="uptime-card" style={{border:'none', boxShadow:'none', padding:0, flex:'none'}}>
+            <div className={`uptime-indicator ${up.status}`} />
+            <div>
+              <div style={{fontSize:13, fontWeight:600, color:'var(--ink)'}}>clinicflow.lat</div>
+              <div style={{fontSize:12, color:'var(--ink4)'}}>{up.status === 'up' ? `Online · ${up.latency}ms` : up.status === 'down' ? 'Offline' : 'Checking…'}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="stat-grid">
+        {[
+          { label:'Open Tasks',    val:d.openTasks,    sub:`${d.blockedTasks} blocked`,        color: d.blockedTasks>0?'yellow':'' },
+          { label:'Open Bugs',     val:d.openBugs,     sub:`${d.criticalBugs} critical`,       color: d.criticalBugs>0?'red':d.openBugs>5?'yellow':'' },
+          { label:'Active Leads',  val:d.activeLeads,  sub:`${d.wonLeads} won total`,          color: d.activeLeads===0?'yellow':'blue' },
+          { label:'Onboardings',   val:d.activeOnbs,   sub:`${d.completedOnbs} completed`,     color:'blue' },
+          { label:'Standups Today',val:d.standupsToday,sub:'Team check-ins',                   color: d.standupsToday===0?'yellow':'green' },
+          { label:'TITAN Chats',   val:d.totalInteractions, sub:`${d.unknownMessages} unknown`, color:'' },
+          { label:'Clients Won',   val:d.metrics?.newClients||0, sub:'ClinicFlow clients',     color:'green' },
+          { label:'Tasks Done',    val:d.metrics?.tasksCompleted||0, sub:'All time',           color:'' },
+        ].map(s => (
+          <div className="stat-card" key={s.label}>
+            <div className="stat-label">{s.label}</div>
+            <div className={`stat-value ${s.color}`}>{s.val}</div>
+            <div className="stat-sub">{s.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Quick actions */}
+      <div className="card">
+        <div className="card-header"><div className="card-title">Quick Actions</div></div>
+        <div style={{padding:'8px 16px'}}>
+          {[
+            { icon:'⌛', title:'Send Reflection', desc:'Post end-of-day check-in to #daily-standup', action: () => api.post('/api/slack/reflection').then(r => r?.success ? toast('Reflection sent','success') : toast(r?.error||'Failed','error')) },
+            { icon:'⚡', title:'Trigger Briefing', desc:'Post AI briefing to #daily-standup now', action: () => api.post('/api/slack/briefing').then(r => r?.success ? toast('Briefing triggered','success') : toast(r?.error||'Failed','error')) },
+          ].map(a => (
+            <div className="action-row" key={a.title} onClick={a.action} style={{cursor:'pointer'}}>
+              <div className="action-icon">{a.icon}</div>
+              <div className="action-info">
+                <div className="action-title">{a.title}</div>
+                <div className="action-desc">{a.desc}</div>
+              </div>
+              <div style={{color:'var(--ink4)', fontSize:18}}>›</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── TASKS ────────────────────────────────
+function Tasks() {
+  const [tasks, setTasks] = useState([]);
+  const [filter, setFilter] = useState('open');
+  const [modal, setModal] = useState(false);
+  const [form, setForm] = useState({ title:'', assignee:'', priority:'🟡 Medium', area:'dev', dueDate:'' });
+  const load = () => api.get(`/api/tasks${filter!=='all'?`?status=${filter}`:''}`).then(setTasks);
+  useEffect(() => { load(); }, [filter]);
+
+  async function create() {
+    if (!form.title) return toast('Title required','error');
+    const r = await api.post('/api/tasks', form);
+    if (r?.id) { toast(`Task ${r.id} created`,'success'); setModal(false); load(); setForm({title:'',assignee:'',priority:'🟡 Medium',area:'dev',dueDate:''}); }
+    else toast(r?.error||'Failed','error');
+  }
+
+  async function update(id, status) {
+    await api.patch(`/api/tasks/${id}`, { status });
+    toast(status === 'done' ? 'Task completed ✓' : `Marked ${status}`,'success');
+    load();
+  }
+
+  const priColor = p => p?.includes('Critical')?'badge-red':p?.includes('High')?'badge-yellow':p?.includes('Medium')?'badge-blue':'badge-gray';
+  const stColor  = s => s==='done'?'badge-green':s==='blocked'?'badge-red':s==='in_progress'?'badge-yellow':'badge-blue';
+
+  return (
+    <div>
+      <div className="section-header">
+        <h1 className="section-title">Tasks</h1>
+        <button className="btn btn-primary btn-sm" onClick={() => setModal(true)}>+ New</button>
+      </div>
+
+      <div className="tabs" style={{marginBottom:16}}>
+        {['open','in_progress','blocked','done','all'].map(s => (
+          <div key={s} className={`tab ${filter===s?'active':''}`} onClick={() => setFilter(s)}>
+            {s.replace('_',' ')}
+          </div>
+        ))}
+      </div>
+
+      <div className="card">
+        {tasks.length === 0
+          ? <div className="empty"><div className="empty-icon">✅</div><div className="empty-text">No tasks found</div></div>
+          : <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>ID</th><th>Title</th><th>Priority</th><th>Area</th><th>Status</th><th>Due</th><th></th></tr>
+                </thead>
+                <tbody>
+                  {tasks.map(t => (
+                    <tr key={t.id}>
+                      <td><span style={{fontFamily:'var(--mono)', fontSize:11, color:'var(--blue)', fontWeight:600}}>{t.id}</span></td>
+                      <td style={{maxWidth:200, fontWeight:500}}>{t.title}</td>
+                      <td><span className={`badge ${priColor(t.priority)}`}>{t.priority?.replace(/[🔴🟠🟡🟢]/g,'').trim()}</span></td>
+                      <td><span className="badge badge-gray">{t.area}</span></td>
+                      <td><span className={`badge ${stColor(t.status)}`}>{t.status}</span></td>
+                      <td style={{fontSize:12, color:'var(--ink4)'}}>{t.due_date}</td>
+                      <td>
+                        <div style={{display:'flex', gap:4}}>
+                          {t.status!=='done'        && <button className="btn-icon" title="Done"        onClick={() => update(t.id,'done')}>✓</button>}
+                          {t.status==='open'         && <button className="btn-icon" title="In Progress" onClick={() => update(t.id,'in_progress')}>▶</button>}
+                          {t.status!=='blocked'&&t.status!=='done' && <button className="btn-icon" title="Block" style={{color:'var(--red)'}} onClick={() => update(t.id,'blocked')}>⊘</button>}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+        }
+      </div>
+
+      {modal && (
+        <div className="modal-overlay" onClick={e => e.target===e.currentTarget && setModal(false)}>
+          <div className="modal">
+            <div className="modal-handle"/>
+            <div className="modal-title">New Task</div>
+            <div className="form-group">
+              <label className="form-label">Title</label>
+              <input className="form-input" value={form.title} onChange={e => setForm(p=>({...p,title:e.target.value}))} placeholder="e.g. Fix login flow" autoFocus />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Assignee (Slack ID)</label>
+              <input className="form-input" value={form.assignee} onChange={e => setForm(p=>({...p,assignee:e.target.value}))} placeholder="U0B728YJV7D" />
+            </div>
+            <div className="grid-2">
+              <div className="form-group">
+                <label className="form-label">Priority</label>
+                <select className="form-select" value={form.priority} onChange={e => setForm(p=>({...p,priority:e.target.value}))}>
+                  {['🔴 Critical','🟠 High','🟡 Medium','🟢 Low'].map(v => <option key={v}>{v}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Area</label>
+                <select className="form-select" value={form.area} onChange={e => setForm(p=>({...p,area:e.target.value}))}>
+                  {['dev','onboarding','sales','support','ops'].map(v => <option key={v}>{v}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Due Date</label>
+              <input className="form-input" type="date" value={form.dueDate} onChange={e => setForm(p=>({...p,dueDate:e.target.value}))} />
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={() => setModal(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={create}>Create Task</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── LEADS ────────────────────────────────
+function Leads() {
+  const [leads, setLeads] = useState([]);
+  const [modal, setModal] = useState(false);
+  const [form, setForm] = useState({ clinicName:'', contact:'', stage:'📞 First Contact', notes:'' });
+  const load = () => api.get('/api/leads').then(setLeads);
+  useEffect(() => { load(); }, []);
+
+  const STAGES = ['📞 First Contact','🎯 Demo Scheduled','💬 Proposal Sent','🤝 Negotiating','🎉 Closed Won','❌ Closed Lost'];
+  const STAGE_STATUS = {'🎉 Closed Won':'won','❌ Closed Lost':'lost'};
+
+  async function create() {
+    if (!form.clinicName) return toast('Clinic name required','error');
+    const r = await api.post('/api/leads', form);
+    if (r?.id) { toast(`Lead ${r.id} added`,'success'); setModal(false); load(); setForm({clinicName:'',contact:'',stage:'📞 First Contact',notes:''}); }
+    else toast(r?.error||'Failed','error');
+  }
+
+  async function move(id, stage) {
+    const status = STAGE_STATUS[stage] || stage.toLowerCase().replace(/[^a-z]/g,'');
+    const r = await api.patch(`/api/leads/${id}`, { status, stage });
+    if (r?.success) { toast(stage.includes('Won') ? '🎉 Closed won!' : 'Lead updated','success'); load(); }
+    else toast(r?.error||'Failed','error');
+  }
+
+  const stColor = s => s==='won'?'badge-green':s==='lost'?'badge-red':['negotiating','proposal'].includes(s)?'badge-yellow':'badge-blue';
+  const active = leads.filter(l => !['won','lost'].includes(l.status));
+  const won    = leads.filter(l => l.status === 'won');
+
+  return (
+    <div>
+      <div className="section-header">
+        <h1 className="section-title">Pipeline</h1>
+        <button className="btn btn-primary btn-sm" onClick={() => setModal(true)}>+ New Lead</button>
+      </div>
+
+      <div className="grid-3" style={{marginBottom:16}}>
+        {[
+          { label:'Active',       val:active.length, color:'' },
+          { label:'Closed Won',   val:won.length,    color:'green' },
+          { label:'Closed Lost',  val:leads.filter(l=>l.status==='lost').length, color:'red' },
+        ].map(s => (
+          <div className="stat-card" key={s.label}>
+            <div className="stat-label">{s.label}</div>
+            <div className={`stat-value ${s.color}`}>{s.val}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="card">
+        {leads.length === 0
+          ? <div className="empty"><div className="empty-icon">💰</div><div className="empty-text">No leads yet</div></div>
+          : <div className="table-wrap">
+              <table>
+                <thead><tr><th>ID</th><th>Clinic</th><th>Contact</th><th>Stage</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  {leads.map(l => (
+                    <tr key={l.id}>
+                      <td><span style={{fontFamily:'var(--mono)', fontSize:11, color:'var(--blue)', fontWeight:600}}>{l.id}</span></td>
+                      <td style={{fontWeight:600}}>{l.clinic_name}</td>
+                      <td style={{fontSize:12, color:'var(--ink4)'}}>{l.contact}</td>
+                      <td style={{fontSize:13}}>{l.stage}</td>
+                      <td><span className={`badge ${stColor(l.status)}`}>{l.status}</span></td>
+                      <td>
+                        <div style={{display:'flex', gap:4}}>
+                          {l.status!=='won'  && <button className="btn btn-success btn-sm" onClick={() => move(l.id,'🎉 Closed Won')}>Won</button>}
+                          {!['won','lost'].includes(l.status) && <button className="btn btn-danger btn-sm" onClick={() => move(l.id,'❌ Closed Lost')}>Lost</button>}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+        }
+      </div>
+
+      {modal && (
+        <div className="modal-overlay" onClick={e => e.target===e.currentTarget && setModal(false)}>
+          <div className="modal">
+            <div className="modal-handle"/>
+            <div className="modal-title">Add Lead</div>
+            {[{f:'clinicName',l:'Clinic Name',p:'e.g. Clínica Santa Rosa'},{f:'contact',l:'Contact',p:'Name + WhatsApp'}].map(({f,l,p}) => (
+              <div className="form-group" key={f}>
+                <label className="form-label">{l}</label>
+                <input className="form-input" value={form[f]} onChange={e => setForm(prev=>({...prev,[f]:e.target.value}))} placeholder={p} />
+              </div>
+            ))}
+            <div className="form-group">
+              <label className="form-label">Stage</label>
+              <select className="form-select" value={form.stage} onChange={e => setForm(p=>({...p,stage:e.target.value}))}>
+                {STAGES.map(s => <option key={s}>{s}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Notes</label>
+              <textarea className="form-textarea" value={form.notes} onChange={e => setForm(p=>({...p,notes:e.target.value}))} placeholder="Pain points, budget, source…" />
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={() => setModal(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={create}>Add Lead</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── BUGS ─────────────────────────────────
+function Bugs() {
+  const [bugs, setBugs] = useState([]);
+  const [filter, setFilter] = useState('open');
+  const [modal, setModal] = useState(false);
+  const [form, setForm] = useState({ title:'', severity:'🟡 Medium — Feature partially broken', sevVal:'medium', steps:'', assignee:'' });
+  const load = () => api.get('/api/bugs').then(d => setBugs(filter==='all'?d:d.filter(b=>b.status===filter)));
+  useEffect(() => { api.get('/api/bugs').then(d => setBugs(filter==='all'?d:d.filter(b=>b.status===filter))); }, [filter]);
+
+  const SEVS = [
+    { label:'🔴 Critical — App down / data loss', val:'critical' },
+    { label:'🟠 High — Major feature broken',     val:'high' },
+    { label:'🟡 Medium — Feature partially broken',val:'medium' },
+    { label:'🟢 Low — Minor / cosmetic',           val:'low' },
+  ];
+
+  async function create() {
+    if (!form.title) return toast('Title required','error');
+    const r = await api.post('/api/bugs', form);
+    if (r?.id) { toast(`Bug ${r.id} reported`,'success'); setModal(false); load(); }
+    else toast(r?.error||'Failed','error');
+  }
+
+  const sevColor = v => v==='critical'?'badge-red':v==='high'?'badge-yellow':v==='medium'?'badge-blue':'badge-gray';
+  const stColor  = s => s==='resolved'?'badge-green':s==='in_progress'?'badge-yellow':'badge-red';
+
+  return (
+    <div>
+      <div className="section-header">
+        <h1 className="section-title">Bugs</h1>
+        <button className="btn btn-primary btn-sm" onClick={() => setModal(true)}>+ Report</button>
+      </div>
+
+      <div className="tabs">
+        {['open','in_progress','resolved','all'].map(s => (
+          <div key={s} className={`tab ${filter===s?'active':''}`} onClick={() => setFilter(s)}>{s.replace('_',' ')}</div>
+        ))}
+      </div>
+
+      <div className="card">
+        {bugs.length === 0
+          ? <div className="empty"><div className="empty-icon">🟢</div><div className="empty-text">No bugs. ClinicFlow is clean.</div></div>
+          : <div className="table-wrap">
+              <table>
+                <thead><tr><th>ID</th><th>Title</th><th>Severity</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  {bugs.map(b => (
+                    <tr key={b.id}>
+                      <td><span style={{fontFamily:'var(--mono)', fontSize:11, color:'var(--red)', fontWeight:600}}>{b.id}</span></td>
+                      <td style={{maxWidth:220, fontWeight:500}}>{b.title}</td>
+                      <td><span className={`badge ${sevColor(b.sev_val)}`}>{b.sev_val}</span></td>
+                      <td><span className={`badge ${stColor(b.status)}`}>{b.status}</span></td>
+                      <td>
+                        <div style={{display:'flex', gap:4}}>
+                          {b.status==='open' && <button className="btn-icon" title="Start" onClick={() => api.patch(`/api/bugs/${b.id}`,{status:'in_progress'}).then(load)}>▶</button>}
+                          {b.status!=='resolved' && <button className="btn-icon" title="Resolve" style={{color:'var(--green)'}} onClick={() => api.patch(`/api/bugs/${b.id}`,{status:'resolved'}).then(load)}>✓</button>}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+        }
+      </div>
+
+      {modal && (
+        <div className="modal-overlay" onClick={e => e.target===e.currentTarget && setModal(false)}>
+          <div className="modal">
+            <div className="modal-handle"/>
+            <div className="modal-title">Report Bug</div>
+            <div className="form-group">
+              <label className="form-label">Title</label>
+              <input className="form-input" value={form.title} onChange={e => setForm(p=>({...p,title:e.target.value}))} placeholder="e.g. Calendar crashes on iOS" autoFocus />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Severity</label>
+              <select className="form-select" value={form.severity} onChange={e => {
+                const o = SEVS.find(x => x.label===e.target.value);
+                setForm(p=>({...p, severity:e.target.value, sevVal:o?.val||'medium'}));
+              }}>
+                {SEVS.map(o => <option key={o.val}>{o.label}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Assign To (Slack ID)</label>
+              <input className="form-input" value={form.assignee} onChange={e => setForm(p=>({...p,assignee:e.target.value}))} placeholder="U0B728YJV7D" />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Steps to Reproduce</label>
+              <textarea className="form-textarea" value={form.steps} onChange={e => setForm(p=>({...p,steps:e.target.value}))} placeholder="1. Go to…&#10;2. Click…&#10;3. See error" />
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={() => setModal(false)}>Cancel</button>
+              <button className="btn btn-danger" style={{background:'var(--red)', color:'white', border:'none'}} onClick={create}>Report Bug</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── ONBOARDINGS ──────────────────────────
+function Onboardings() {
+  const [onbs, setOnbs] = useState([]);
+  const [modal, setModal] = useState(false);
+  const [form, setForm] = useState({ clinicName:'', owner:'', contact:'' });
+  const load = () => api.get('/api/onboardings').then(setOnbs);
+  useEffect(() => { load(); }, []);
+
+  async function create() {
+    if (!form.clinicName) return toast('Clinic name required','error');
+    const r = await api.post('/api/onboardings', form);
+    if (r?.id) { toast(`Onboarding started`,'success'); setModal(false); load(); }
+    else toast(r?.error||'Failed','error');
+  }
+
+  async function step(id, idx) {
+    const r = await api.patch(`/api/onboardings/${id}/step`, { stepIndex: idx });
+    if (r?.allDone) toast('🎉 Onboarding complete!','success');
+    else toast('Step completed','success');
+    load();
+  }
+
+  return (
+    <div>
+      <div className="section-header">
+        <h1 className="section-title">Onboarding</h1>
+        <button className="btn btn-primary btn-sm" onClick={() => setModal(true)}>+ Start</button>
+      </div>
+
+      {onbs.length === 0
+        ? <div className="card"><div className="empty"><div className="empty-icon">🏥</div><div className="empty-text">No onboardings yet</div></div></div>
+        : onbs.map(o => {
+            const done  = o.steps?.filter(s=>s.done).length || 0;
+            const total = o.steps?.length || 6;
+            const pct   = Math.round((done/total)*100);
+            return (
+              <div className="card" key={o.id} style={{marginBottom:12}}>
+                <div className="card-header">
+                  <div>
+                    <div style={{display:'flex', alignItems:'center', gap:8, marginBottom:2}}>
+                      <span style={{fontFamily:'var(--mono)', fontSize:11, color:'var(--blue)', fontWeight:600}}>{o.id}</span>
+                      <span style={{fontWeight:700, fontSize:15}}>{o.clinic_name}</span>
+                      <span className={`badge ${o.status==='complete'?'badge-green':'badge-blue'}`}>{o.status}</span>
+                    </div>
+                    <div style={{fontSize:12, color:'var(--ink4)'}}>Contact: {o.contact}</div>
+                  </div>
+                  <div style={{textAlign:'right'}}>
+                    <div style={{fontSize:22, fontWeight:800, color: pct===100?'var(--green)':'var(--blue)', letterSpacing:'-1px'}}>{pct}%</div>
+                    <div style={{fontSize:11, color:'var(--ink4)'}}>{done}/{total} steps</div>
+                  </div>
+                </div>
+                <div style={{padding:'0 20px 4px'}}>
+                  <div className="progress-track" style={{marginBottom:16}}>
+                    <div className={`progress-fill ${pct===100?'done':''}`} style={{width:`${pct}%`}} />
+                  </div>
+                  {o.steps?.map((s, i) => (
+                    <div key={i} className="check-row" onClick={() => !s.done && o.status!=='complete' && step(o.id, i)}>
+                      <div className={`check-box ${s.done?'done':''}`}>{s.done?'✓':''}</div>
+                      <span className={`check-text ${s.done?'done':''}`}>{s.title}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })
+      }
+
+      {modal && (
+        <div className="modal-overlay" onClick={e => e.target===e.currentTarget && setModal(false)}>
+          <div className="modal">
+            <div className="modal-handle"/>
+            <div className="modal-title">Start Onboarding</div>
+            {[{f:'clinicName',l:'Clinic Name',p:'e.g. Clínica Santa Rosa'},{f:'owner',l:'Owner (Slack ID)',p:'U0B728YJV7D'},{f:'contact',l:'Contact',p:'Name + WhatsApp'}].map(({f,l,p}) => (
+              <div className="form-group" key={f}>
+                <label className="form-label">{l}</label>
+                <input className="form-input" value={form[f]} onChange={e => setForm(prev=>({...prev,[f]:e.target.value}))} placeholder={p} />
+              </div>
+            ))}
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={() => setModal(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={create}>Start Onboarding</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── STANDUPS ─────────────────────────────
+function Standups() {
+  const [list, setList] = useState([]);
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  useEffect(() => { api.get(`/api/standups?date=${date}`).then(setList); }, [date]);
+
+  return (
+    <div>
+      <div className="section-header">
+        <h1 className="section-title">Standups</h1>
+        <input className="form-input" type="date" value={date} onChange={e => setDate(e.target.value)} style={{width:'auto', maxWidth:160, fontSize:13, padding:'6px 10px'}} />
+      </div>
+
+      {list.length === 0
+        ? <div className="card"><div className="empty"><div className="empty-icon">📋</div><div className="empty-text">No standups for {date}</div></div></div>
+        : list.map(s => (
+            <div className="card" key={s.user_id} style={{marginBottom:10}}>
+              <div className="card-header">
+                <div style={{display:'flex', alignItems:'center', gap:10}}>
+                  <div className="avatar" style={{width:36, height:36, borderRadius:10, fontSize:14}}>{s.user_id?.slice(-2).toUpperCase()}</div>
+                  <div>
+                    <div style={{fontFamily:'var(--mono)', fontSize:12, color:'var(--blue)', fontWeight:600}}>{s.user_id}</div>
+                    <div style={{fontSize:11, color:'var(--ink4)'}}>{s.area} · {s.date}</div>
+                  </div>
+                </div>
+              </div>
+              <div style={{padding:'16px 20px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:16}}>
+                <div>
+                  <div style={{fontSize:11, fontWeight:600, color:'var(--ink4)', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:6}}>Today's Focus</div>
+                  <div style={{fontSize:13, color:'var(--ink2)'}}>{s.focus}</div>
+                </div>
+                <div>
+                  <div style={{fontSize:11, fontWeight:600, color:'var(--ink4)', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:6}}>Yesterday's Wins</div>
+                  <div style={{fontSize:13, color:'var(--ink2)'}}>{s.wins}</div>
+                </div>
+                {s.blockers && s.blockers !== '_None_ ✅' && (
+                  <div style={{gridColumn:'1/-1'}}>
+                    <div style={{fontSize:11, fontWeight:600, color:'var(--red)', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:6}}>Blockers</div>
+                    <div style={{fontSize:13, color:'var(--ink2)'}}>{s.blockers}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))
+      }
+    </div>
+  );
+}
+
+// ── INTELLIGENCE ─────────────────────────
+function Intelligence() {
+  const [tab, setTab] = useState('log');
+  const [log, setLog]   = useState([]);
+  const [unk, setUnk]   = useState([]);
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    api.get('/api/interactions?limit=100').then(setLog);
+    api.get('/api/interactions/unknowns').then(setUnk);
+    api.get('/api/interactions/stats').then(setStats);
+  }, []);
+
+  const ic = i => i==='claude'?'badge-blue':i==='unknown'||i==='claude_error'?'badge-red':'badge-gray';
+
+  return (
+    <div>
+      <div className="section-header"><h1 className="section-title">Intelligence</h1></div>
+
+      {stats && (
+        <div className="stat-grid" style={{gridTemplateColumns:'repeat(4,1fr)', marginBottom:16}}>
+          {[
+            { label:'Total Chats',   val:stats.total,       color:'' },
+            { label:'Hit Rate',      val:`${stats.hitRate}%`, color:stats.hitRate>80?'green':'yellow' },
+            { label:'Claude Calls',  val:stats.claudeCalls,  color:'blue', sub:`~$${(stats.claudeCalls*0.0005).toFixed(3)}` },
+            { label:'Unknowns',      val:stats.misses,       color:stats.misses>10?'yellow':'' },
+          ].map(s => (
+            <div className="stat-card" key={s.label}>
+              <div className="stat-label">{s.label}</div>
+              <div className={`stat-value ${s.color}`}>{s.val}</div>
+              {s.sub && <div className="stat-sub">{s.sub}</div>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="tabs">
+        {['log','unknowns','stats'].map(t => <div key={t} className={`tab ${tab===t?'active':''}`} onClick={() => setTab(t)}>{t}</div>)}
+      </div>
+
+      {tab==='log' && (
+        <div className="card">
+          <div className="card-body" style={{padding:0}}>
+            {log.length===0
+              ? <div className="empty"><div className="empty-text">No interactions yet</div></div>
+              : <div style={{padding:'0 20px'}}>
+                  {log.map((i,idx) => (
+                    <div key={idx} className="int-row">
+                      <div className="int-user">{i.user_id?.slice(-6)}</div>
+                      <div className="int-text">{i.normalized_text?.substring(0,120)}</div>
+                      <span className={`badge int-badge ${ic(i.intent_matched)}`}>{i.intent_matched}</span>
+                    </div>
+                  ))}
+                </div>
+            }
+          </div>
+        </div>
+      )}
+
+      {tab==='unknowns' && (
+        <div className="card">
+          {unk.length===0
+            ? <div className="empty"><div className="empty-icon">🧠</div><div className="empty-text">TITAN is handling everything</div></div>
+            : <div className="table-wrap">
+                <table>
+                  <thead><tr><th>Message</th><th>Seen</th><th>Last</th></tr></thead>
+                  <tbody>
+                    {unk.map((u,i) => (
+                      <tr key={i}>
+                        <td style={{fontFamily:'var(--mono)', fontSize:12, color:'var(--yellow)', maxWidth:280}}>{u.normalized_text}</td>
+                        <td><span className="badge badge-yellow">{u.count}×</span></td>
+                        <td style={{fontSize:12, color:'var(--ink4)'}}>{new Date(u.last_seen).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+          }
+        </div>
+      )}
+
+      {tab==='stats' && stats && (
+        <div className="grid-2">
+          <div className="card">
+            <div className="card-header"><div className="card-title">Top Intents</div></div>
+            <div className="card-body">
+              <div className="bar-chart">
+                {stats.topIntents.map(i => (
+                  <div className="bar-row" key={i.intent_matched}>
+                    <div className="bar-label">{i.intent_matched}</div>
+                    <div className="bar-track"><div className="bar-fill" style={{width:`${Math.min(100,(i.cnt/stats.topIntents[0]?.cnt)*100)}%`}} /></div>
+                    <div className="bar-count">{i.cnt}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-header"><div className="card-title">Active Users</div></div>
+            <div className="card-body">
+              <div className="bar-chart">
+                {stats.topUsers.map(u => (
+                  <div className="bar-row" key={u.user_id}>
+                    <div className="bar-label">{u.user_id?.slice(-8)}</div>
+                    <div className="bar-track"><div className="bar-fill green" style={{width:`${Math.min(100,(u.cnt/stats.topUsers[0]?.cnt)*100)}%`}} /></div>
+                    <div className="bar-count">{u.cnt}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── PATTERNS ─────────────────────────────
+function Patterns() {
+  const [patterns, setPatterns] = useState([]);
+  const [form, setForm] = useState({ triggerPhrase:'', intentTarget:'' });
+  const load = () => api.get('/api/patterns').then(setPatterns);
+  useEffect(() => { load(); }, []);
+
+  const INTENTS = ['status','tasks','bugs','leads','onboarding','standup','hype','help','report','pipeline','uptime','greeting','joke','overwhelmed'];
+
+  async function add() {
+    if (!form.triggerPhrase || !form.intentTarget) return toast('Both fields required','error');
+    const r = await api.post('/api/patterns', form);
+    if (r?.id) { toast('Pattern added','success'); load(); setForm({triggerPhrase:'',intentTarget:''}); }
+    else toast(r?.error||'Failed','error');
+  }
+
+  return (
+    <div>
+      <div className="section-header"><h1 className="section-title">Patterns</h1></div>
+
+      <div className="card" style={{marginBottom:16}}>
+        <div className="card-header"><div className="card-title">Teach TITAN</div></div>
+        <div className="card-body">
+          <div style={{display:'flex', gap:10, alignItems:'flex-end', flexWrap:'wrap'}}>
+            <div style={{flex:2, minWidth:160}}>
+              <label className="form-label">Trigger Phrase</label>
+              <input className="form-input" value={form.triggerPhrase} onChange={e => setForm(p=>({...p,triggerPhrase:e.target.value}))} placeholder='e.g. "cuanto llevamos"' />
+            </div>
+            <div style={{color:'var(--ink4)', fontSize:18, paddingBottom:10, flexShrink:0}}>→</div>
+            <div style={{flex:1, minWidth:140}}>
+              <label className="form-label">Intent</label>
+              <select className="form-select" value={form.intentTarget} onChange={e => setForm(p=>({...p,intentTarget:e.target.value}))}>
+                <option value="">Select…</option>
+                {INTENTS.map(i => <option key={i} value={i}>{i}</option>)}
+              </select>
+            </div>
+            <button className="btn btn-primary" style={{flexShrink:0, marginBottom:1}} onClick={add}>Add</button>
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-header"><div className="card-title">Learned Patterns ({patterns.length})</div></div>
+        {patterns.length===0
+          ? <div className="empty"><div className="empty-icon">🧠</div><div className="empty-text">No patterns yet. Teach TITAN something.</div></div>
+          : patterns.map(p => (
+              <div key={p.id} className="pattern-row">
+                <div className="pattern-trigger">"{p.trigger_phrase}"</div>
+                <div className="pattern-arrow">→</div>
+                <div className="pattern-intent">{p.intent_target}</div>
+                <div className="pattern-count">{p.use_count}×</div>
+                <span className={`badge ${p.active?'badge-green':'badge-gray'}`}>{p.active?'on':'off'}</span>
+                <div style={{display:'flex', gap:4, marginLeft:8}}>
+                  <button className="btn-icon" onClick={() => api.patch(`/api/patterns/${p.id}`,{active:!p.active}).then(load)}>{p.active?'⏸':'▶'}</button>
+                  <button className="btn-icon" style={{color:'var(--red)'}} onClick={() => { if(confirm('Delete?')) api.delete(`/api/patterns/${p.id}`).then(load); }}>✕</button>
+                </div>
+              </div>
+            ))
+        }
+      </div>
+    </div>
+  );
+}
+
+// ── SLACK CONTROL ────────────────────────
+function SlackControl() {
+  const [tab, setTab]   = useState('announce');
+  const [ch, setCh]     = useState('standup');
+  const [msg, setMsg]   = useState('');
+  const [pollQ, setPollQ] = useState('');
+  const [winClinic, setWinClinic] = useState('');
+  const [winInd, setWinInd]       = useState('');
+
+  const CHS = [
+    {key:'wins',label:'#wins'}, {key:'standup',label:'#daily-standup'},
+    {key:'ops_alerts',label:'#ops-alerts'}, {key:'sales',label:'#marketing'},
+    {key:'dev',label:'#engineering'}, {key:'onboarding',label:'#client-onboarding'},
+  ];
+
+  const post = async (endpoint, body) => {
+    const r = await api.post(endpoint, body);
+    if (r?.success) toast('Posted to Slack ✓','success');
+    else toast(r?.error || 'Failed — check SLACK_BOT_TOKEN','error');
+  };
+
+  return (
+    <div>
+      <div className="section-header"><h1 className="section-title">Slack</h1></div>
+
+      <div className="tabs">
+        {['announce','poll','celebrate','triggers'].map(t => <div key={t} className={`tab ${tab===t?'active':''}`} onClick={() => setTab(t)}>{t}</div>)}
+      </div>
+
+      {tab==='announce' && (
+        <div className="card">
+          <div className="card-body">
+            <div className="form-group">
+              <label className="form-label">Channel</label>
+              <div className="channel-pills">
+                {CHS.map(c => <div key={c.key} className={`channel-pill ${ch===c.key?'active':''}`} onClick={() => setCh(c.key)}>{c.label}</div>)}
+              </div>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Message</label>
+              <textarea className="form-textarea" value={msg} onChange={e => setMsg(e.target.value)} placeholder="Your announcement…" style={{minHeight:100}} />
+            </div>
+            <button className="btn btn-primary" onClick={() => msg.trim() && post('/api/slack/announce',{channel:ch,message:msg})}>Post Announcement</button>
+          </div>
+        </div>
+      )}
+
+      {tab==='poll' && (
+        <div className="card">
+          <div className="card-body">
+            <div className="form-group">
+              <label className="form-label">Channel</label>
+              <div className="channel-pills">
+                {CHS.map(c => <div key={c.key} className={`channel-pill ${ch===c.key?'active':''}`} onClick={() => setCh(c.key)}>{c.label}</div>)}
+              </div>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Question</label>
+              <input className="form-input" value={pollQ} onChange={e => setPollQ(e.target.value)} placeholder="Should we move the call to Friday?" />
+            </div>
+            <div style={{fontSize:12, color:'var(--ink4)', marginBottom:14}}>Team votes 👍 Yes · 👎 No · 🤷 Maybe</div>
+            <button className="btn btn-primary" onClick={() => pollQ.trim() && post('/api/slack/poll',{channel:ch,question:pollQ})}>Post Poll</button>
+          </div>
+        </div>
+      )}
+
+      {tab==='celebrate' && (
+        <div className="card">
+          <div className="card-body">
+            <div className="form-group">
+              <label className="form-label">Clinic Name</label>
+              <input className="form-input" value={winClinic} onChange={e => setWinClinic(e.target.value)} placeholder="e.g. Clínica Santa Rosa" />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Industry</label>
+              <input className="form-input" value={winInd} onChange={e => setWinInd(e.target.value)} placeholder="e.g. Dental, General Medicine" />
+            </div>
+            <div style={{fontSize:12, color:'var(--ink4)', marginBottom:14}}>Posts to #wins and increments client counter</div>
+            <button className="btn btn-primary" onClick={() => winClinic.trim() && post('/api/slack/new-win',{clinicName:winClinic,industry:winInd})}>🚀 Announce Win</button>
+          </div>
+        </div>
+      )}
+
+      {tab==='triggers' && (
+        <div className="card">
+          {[
+            { icon:'⌛', title:'End-of-Day Reflection', desc:'Posts reflection prompt to #daily-standup', endpoint:'/api/slack/reflection', body:{} },
+            { icon:'⚡', title:'Daily Briefing', desc:'Triggers AI briefing to #daily-standup', endpoint:'/api/slack/briefing', body:{} },
+          ].map(a => (
+            <div className="action-row" key={a.title}>
+              <div className="action-icon">{a.icon}</div>
+              <div className="action-info">
+                <div className="action-title">{a.title}</div>
+                <div className="action-desc">{a.desc}</div>
+              </div>
+              <button className="btn btn-ghost btn-sm" onClick={() => post(a.endpoint, a.body)}>Send →</button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── COMMANDS ─────────────────────────────
+function Commands() {
+  const [active, setActive] = useState(null);
+
+  const CMDS = [
+    { section:'Standup & Visibility', items:[
+      { cmd:'/standup',        desc:'Submit daily standup', detail:'Opens a modal: focus, wins, blockers, area. Posts to #daily-standup.' },
+      { cmd:'/standup-report', desc:'See who submitted today', detail:'Shows submitted vs missing team members.' },
+      { cmd:'/reflection',     desc:'Send end-of-day check-in', detail:'Posts reflection prompt with energy buttons.' },
+    ]},
+    { section:'Task Tracker', items:[
+      { cmd:'/task',  desc:'Create a task via modal', detail:'Title, assignee, priority, area, due date. DMs assignee.' },
+      { cmd:'/tasks', desc:'View open tasks', detail:'Filter: /tasks dev, /tasks @user' },
+    ]},
+    { section:'Sales', items:[
+      { cmd:'/lead',     desc:'Log a new clinic lead', detail:'Clinic name, contact, stage, notes.' },
+      { cmd:'/pipeline', desc:'View active pipeline', detail:'All leads by stage with hot lead alerts.' },
+    ]},
+    { section:'Bugs', items:[
+      { cmd:'/bug', desc:'Report a bug', detail:'Title, severity, steps, assignee. Critical → #ops-alerts.' },
+    ]},
+    { section:'Onboarding', items:[
+      { cmd:'/onboard',     desc:'Start clinic onboarding', detail:'Creates 6-step checklist + Slack canvas.' },
+      { cmd:'/onboardings', desc:'View active onboardings', detail:'Shows progress per clinic.' },
+    ]},
+    { section:'Reporting', items:[
+      { cmd:'/report',        desc:'Full business dashboard', detail:'Tasks, bugs, leads, onboardings, metrics.' },
+      { cmd:'/weekly',        desc:'Post weekly summary', detail:'Posts to #ops-alerts.' },
+      { cmd:'/clinic-status', desc:'Quick system status', detail:'Live counts for all metrics.' },
+    ]},
+    { section:'Tools', items:[
+      { cmd:'/new-win [Name] [Industry]', desc:'Celebrate a new client', detail:'Posts to #wins.' },
+      { cmd:'/announce',     desc:'Broadcast to channel', detail:'Formatted announcement with your name.' },
+      { cmd:'/poll',         desc:'Create a team poll', detail:'Posts 👍👎🤷 poll.' },
+      { cmd:'/create-canvas [Clinic]', desc:'Create onboarding canvas', detail:'Slack canvas with onboarding checklist.' },
+      { cmd:'/cleanup-tests', desc:'Delete bot test messages', detail:'Scans last 50 messages, deletes TEST ones.' },
+      { cmd:'/help-titan',   desc:'Show command list', detail:'Full ephemeral command reference.' },
+    ]},
+    { section:'Conversational (DM or @mention)', items:[
+      { cmd:'"how are we doing?"',   desc:'Full status overview',    detail:'Also: "como vamos", "status"' },
+      { cmd:'"show me blocked tasks"',desc:'Blocked tasks only',     detail:'Also: "algo bloqueado?"' },
+      { cmd:'"what should I focus on?"',desc:'Recommendation',      detail:'Also: "que deberia hacer?"' },
+      { cmd:'"I\'m overwhelmed"',    desc:'Priority breakdown',      detail:'Also: "hay mucho"' },
+      { cmd:'"how\'s the pipeline?"', desc:'Sales summary',          detail:'Also: "como va el pipeline?"' },
+      { cmd:'"is the site up?"',     desc:'Uptime check',            detail:'Also: "clinicflow up?"' },
+      { cmd:'"vamos titan"',         desc:'Hype response',           detail:'Also: "let\'s go", "dale"' },
+      { cmd:'learn: "phrase" → intent', desc:'Teach TITAN',          detail:'Admin only. Maps phrase to intent.' },
+    ]},
+    { section:'Automated (no trigger needed)', items:[
+      { cmd:'8:45am Mon–Fri',   desc:'AI Daily Briefing',    detail:'Posted to #daily-standup automatically.' },
+      { cmd:'9:00am Mon–Fri',   desc:'Standup reminder DMs', detail:'DMs everyone who hasn\'t submitted.' },
+      { cmd:'10:00am Mon–Fri',  desc:'Public standup check', detail:'Submitted vs missing in #daily-standup.' },
+      { cmd:'6:00pm Mon–Fri',   desc:'End-of-day reflection',detail:'Energy check + prompt to #daily-standup.' },
+      { cmd:'Every 5 minutes',  desc:'Uptime monitor',       detail:'Pings clinicflow.lat. Alerts on downtime.' },
+      { cmd:'🔴 reaction',      desc:'Instant escalation',   detail:'Routes any message to #ops-alerts.' },
+    ]},
+  ];
+
+  return (
+    <div>
+      <div className="section-header">
+        <h1 className="section-title">Commands</h1>
+        <span style={{fontSize:13, color:'var(--ink4)'}}>{CMDS.reduce((a,s)=>a+s.items.length,0)} total</span>
+      </div>
+
+      <div className="card">
+        <div className="card-body">
+          {CMDS.map(sec => (
+            <div key={sec.section}>
+              <div className="cmd-section-title">{sec.section}</div>
+              {sec.items.map(item => (
+                <div key={item.cmd} className="cmd-row" onClick={() => setActive(active===item.cmd?null:item.cmd)}>
+                  <div className="cmd-name">{item.cmd}</div>
+                  <div className="cmd-desc">
+                    {item.desc}
+                    {active===item.cmd && <div className="cmd-detail">{item.detail}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── APP ──────────────────────────────────
+function App() {
+  const [user, setUser]     = useState(null);
+  const [page, setPage]     = useState('overview');
+  const [overview, setOverview] = useState(null);
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    if (api.token) {
+      api.get('/api/me')
+        .then(u => { if (u?.username) setUser(u); })
+        .finally(() => setChecking(false));
+    } else {
+      setChecking(false);
+    }
+
+    const iv = setInterval(() => {
+      if (api.token) api.get('/api/overview').then(setOverview);
+    }, 30000);
+
+    if (api.token) api.get('/api/overview').then(setOverview);
+
+    return () => clearInterval(iv);
+  }, []);
+
+  if (checking) return (
+    <div className="loading" style={{height:'100dvh'}}>
+      <div className="spinner" />
+      <span>Loading…</span>
+    </div>
+  );
+
+  if (!user) return <Login onLogin={u => { setUser(u); api.get('/api/overview').then(setOverview); }} />;
+
+  const h = overview?.health || 'green';
+
+  const NAV = [
+    { key:'overview',     icon:'◈', label:'Overview' },
+    { key:'tasks',        icon:'✓', label:'Tasks',      badge: overview?.blockedTasks > 0 ? overview.blockedTasks : null, badgeType:'badge-red-pill' },
+    { key:'leads',        icon:'◉', label:'Pipeline',   badge: overview?.activeLeads > 0  ? overview.activeLeads  : null, badgeType:'badge-blue-pill' },
+    { key:'bugs',         icon:'⬡', label:'Bugs',       badge: overview?.criticalBugs > 0 ? overview.criticalBugs : null, badgeType:'badge-red-pill' },
+    { key:'onboardings',  icon:'⬢', label:'Onboarding', badge: overview?.activeOnbs > 0   ? overview.activeOnbs   : null, badgeType:'badge-blue-pill' },
+    { key:'standups',     icon:'⊕', label:'Standups' },
+    { key:'intelligence', icon:'◈', label:'Intelligence' },
+    { key:'patterns',     icon:'◫', label:'Patterns' },
+    { key:'slackcontrol', icon:'▶', label:'Slack' },
+    { key:'commands',     icon:'⌘', label:'Commands' },
+  ];
+
+  const MOBILE_NAV = [
+    { key:'overview',     icon:'⌂',  label:'Home' },
+    { key:'tasks',        icon:'✓',  label:'Tasks',    badge: overview?.blockedTasks > 0 },
+    { key:'leads',        icon:'◉',  label:'Pipeline' },
+    { key:'bugs',         icon:'⬡',  label:'Bugs',     badge: overview?.criticalBugs > 0 },
+    { key:'slackcontrol', icon:'▶',  label:'Slack' },
+  ];
+
+  const TITLES = {
+    overview:'Overview', tasks:'Tasks', leads:'Pipeline', bugs:'Bugs',
+    onboardings:'Onboarding', standups:'Standups', intelligence:'Intelligence',
+    patterns:'Patterns', slackcontrol:'Slack', commands:'Commands'
+  };
+
+  const renderPage = () => {
+    switch(page) {
+      case 'overview':     return <Overview />;
+      case 'tasks':        return <Tasks />;
+      case 'leads':        return <Leads />;
+      case 'bugs':         return <Bugs />;
+      case 'onboardings':  return <Onboardings />;
+      case 'standups':     return <Standups />;
+      case 'intelligence': return <Intelligence />;
+      case 'patterns':     return <Patterns />;
+      case 'slackcontrol': return <SlackControl />;
+      case 'commands':     return <Commands />;
+      default:             return <Overview />;
+    }
+  };
+
+  return (
+    <div className="app">
+      {/* Desktop sidebar */}
+      <div className="sidebar">
+        <div className="sidebar-logo">
+          <div className="logo-wordmark">TITAN<span>.</span></div>
+          <div className="logo-sub">ClinicFlow Operations</div>
+        </div>
+
+        <div className="sidebar-section">Main</div>
+        {NAV.slice(0,6).map(n => (
+          <div key={n.key} className={`nav-item ${page===n.key?'active':''}`} onClick={() => setPage(n.key)}>
+            <span className="nav-icon">{n.icon}</span>
+            {n.label}
+            {n.badge && <span className={`nav-badge ${n.badgeType}`}>{n.badge}</span>}
+          </div>
+        ))}
+
+        <div className="sidebar-section">Intelligence</div>
+        {NAV.slice(6).map(n => (
+          <div key={n.key} className={`nav-item ${page===n.key?'active':''}`} onClick={() => setPage(n.key)}>
+            <span className="nav-icon">{n.icon}</span>
+            {n.label}
+          </div>
+        ))}
+
+        <div className="sidebar-bottom">
+          <div className="user-row">
+            <div className="avatar">{user.username?.slice(0,2).toUpperCase()}</div>
+            <div>
+              <div className="user-name">{user.username}</div>
+              <div className="user-role">Admin</div>
+            </div>
+          </div>
+          <button className="logout-link" onClick={() => { api.clearToken(); setUser(null); }}>Sign out</button>
+        </div>
+      </div>
+
+      {/* Main area */}
+      <div className="main">
+        <div className="topbar">
+          <div className="topbar-title">{TITLES[page]}</div>
+          <div className={`health-chip ${h}`}>
+            <div className="health-dot" />
+            {h === 'green' ? 'Healthy' : h === 'yellow' ? 'Watch' : 'Critical'}
+          </div>
+          <Clock />
+        </div>
+
+        <div className="content">{renderPage()}</div>
+      </div>
+
+      {/* Mobile bottom nav */}
+      <div className="bottom-nav">
+        {MOBILE_NAV.map(n => (
+          <div key={n.key} className={`bottom-nav-item ${page===n.key?'active':''}`} onClick={() => setPage(n.key)}>
+            {n.badge && <div className="bottom-nav-dot" />}
+            <div className="bottom-nav-icon">{n.icon}</div>
+            <div className="bottom-nav-label">{n.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <Toasts />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
