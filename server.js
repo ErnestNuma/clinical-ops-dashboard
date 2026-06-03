@@ -14,7 +14,7 @@ const JWT_SECRET  = process.env.DASHBOARD_JWT_SECRET || 'titan-secret-change-in-
 const ADMIN_USER  = process.env.DASHBOARD_USER       || 'ernest';
 const ADMIN_PASS  = process.env.DASHBOARD_PASS       || 'clinicflow2026';
 const SLACK_TOKEN = process.env.SLACK_BOT_TOKEN;
-const PORT        = process.env.PORT || process.env.DASHBOARD_PORT || 3999;
+const PORT        = process.env.PORT || process.env.DASHBOARD_PORT || 4000;
 
 const CHANNELS = {
   wins:       'C0B7ARR75QS',
