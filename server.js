@@ -17,12 +17,22 @@ const SLACK_TOKEN = process.env.SLACK_BOT_TOKEN;
 const PORT        = process.env.PORT || process.env.DASHBOARD_PORT || 4000;
 
 const CHANNELS = {
-  wins:       'C0B7ARR75QS',
-  standup:    'C0B74EK0E7M',
-  ops_alerts: 'C0B76QK3DGD',
-  sales:      'C0B7CKNQFRS',
-  dev:        'C0B76V0FQAJ',
-  onboarding: 'C0B75KPAJMB',
+  wins:        'C0B7ARR75QS', // #wins
+  standup:     'C0B74EK0E7M', // #daily-standup
+  ops_alerts:  'C0B76QK3DGD', // #ops-alerts
+  sales:       'C0B7CKNQFRS', // #marketing
+  dev:         'C0B76V0FQAJ', // #engineering
+  onboarding:  'C0B75KPAJMB', // #client-onboarding
+  feedback:    'C0B6VBYKD5M', // #customer-feedback
+  debugging:   'C0B7291THK5', // #debugging-and-testing
+  ideas:       'C0B78PL6KRU', // #ideas
+  deployments: 'C0B791SMYUA', // #deployments
+  bot_logs:    'C0B791SP3QA', // #bot-logs
+  general:     'C0B791T8VD0', // #general
+  general_cf:  'C0B7AF1TK7B', // #general-clinic-flow-sas-de-cv
+  biz_metrics: 'C0B7DQL52R2', // #biz-metrics
+  varios:      'C0B82UJ3W0Y', // #varios
+  product:     'C0B83A5UYEL', // #product
 };
 
 // ─────────────────────────────────────────

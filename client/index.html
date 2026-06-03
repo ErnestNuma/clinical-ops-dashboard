@@ -1,239 +1,367 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)">
 <title>TITAN — ClinicFlow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS — Light + Dark
+═══════════════════════════════════════ */
 :root {
-  --white:      #ffffff;
-  --off-white:  #f5f5f7;
-  --surface:    #fbfbfd;
-  --border:     #e8e8ed;
-  --border2:    #d2d2d7;
-  --ink:        #1d1d1f;
-  --ink2:       #424245;
-  --ink3:       #6e6e73;
-  --ink4:       #aeaeb2;
-  --blue:       #0071e3;
-  --blue-soft:  rgba(0,113,227,0.08);
-  --blue-mid:   rgba(0,113,227,0.15);
-  --green:      #28cd41;
-  --green-soft: rgba(40,205,65,0.1);
-  --yellow:     #ff9f0a;
-  --yellow-soft:rgba(255,159,10,0.1);
-  --red:        #ff3b30;
-  --red-soft:   rgba(255,59,48,0.08);
-  --sans:       'DM Sans', -apple-system, sans-serif;
-  --mono:       'DM Mono', 'SF Mono', monospace;
-  --radius:     12px;
-  --radius-sm:  8px;
-  --radius-xs:  6px;
-  --shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow:     0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
-  --shadow-lg:  0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06);
-  --nav-h:      56px;
+  /* Surfaces */
+  --bg:          #f2f2f7;
+  --surface-1:   #ffffff;
+  --surface-2:   #f5f5f7;
+  --surface-3:   #ebebf0;
+  --glass:       rgba(255,255,255,0.72);
+  --glass-border: rgba(255,255,255,0.6);
+
+  /* Ink */
+  --ink-1: #0a0a0f;
+  --ink-2: #3c3c44;
+  --ink-3: #6c6c7a;
+  --ink-4: #aeaeb8;
+  --ink-5: #d1d1d8;
+
+  /* Borders */
+  --border-1: rgba(0,0,0,0.06);
+  --border-2: rgba(0,0,0,0.10);
+
+  /* Accent — Electric Blue */
+  --accent:      #0066ff;
+  --accent-soft: rgba(0,102,255,0.08);
+  --accent-mid:  rgba(0,102,255,0.16);
+  --accent-glow: rgba(0,102,255,0.24);
+
+  /* Semantic */
+  --green:       #00c853;
+  --green-soft:  rgba(0,200,83,0.1);
+  --yellow:      #ff9500;
+  --yellow-soft: rgba(255,149,0,0.1);
+  --red:         #ff3b30;
+  --red-soft:    rgba(255,59,48,0.08);
+  --purple:      #bf5af2;
+  --purple-soft: rgba(191,90,242,0.1);
+
+  /* Aurora gradient */
+  --aurora: linear-gradient(135deg, rgba(0,102,255,0.04) 0%, rgba(191,90,242,0.04) 50%, rgba(0,200,83,0.04) 100%);
+
+  /* Typography */
+  --font:  'Geist', -apple-system, sans-serif;
+  --mono:  'Geist Mono', 'SF Mono', monospace;
+
+  /* Radii */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r:    14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow:    0 8px 24px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-lg: 0 24px 64px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.06);
+  --shadow-xl: 0 48px 96px rgba(0,0,0,0.16), 0 16px 48px rgba(0,0,0,0.08);
+
+  /* Nav */
+  --nav-w: 232px;
+  --nav-h: 56px;
+
+  /* Transitions */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+[data-theme="dark"] {
+  --bg:          #0a0a0f;
+  --surface-1:   #141418;
+  --surface-2:   #1c1c22;
+  --surface-3:   #242430;
+  --glass:       rgba(20,20,24,0.80);
+  --glass-border: rgba(255,255,255,0.08);
 
-html { height: 100%; }
+  --ink-1: #f2f2f7;
+  --ink-2: #c7c7d4;
+  --ink-3: #8e8ea0;
+  --ink-4: #5a5a6e;
+  --ink-5: #2e2e3e;
 
+  --border-1: rgba(255,255,255,0.06);
+  --border-2: rgba(255,255,255,0.10);
+
+  --accent-soft: rgba(0,102,255,0.12);
+  --accent-mid:  rgba(0,102,255,0.20);
+  --accent-glow: rgba(0,102,255,0.30);
+
+  --aurora: linear-gradient(135deg, rgba(0,102,255,0.06) 0%, rgba(191,90,242,0.06) 50%, rgba(0,200,83,0.06) 100%);
+
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.24), 0 1px 3px rgba(0,0,0,0.16);
+  --shadow:    0 8px 24px rgba(0,0,0,0.32), 0 2px 8px rgba(0,0,0,0.16);
+  --shadow-lg: 0 24px 64px rgba(0,0,0,0.48), 0 8px 24px rgba(0,0,0,0.24);
+}
+
+/* ═══════════════════════════════════════
+   RESET + BASE
+═══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; color-scheme: light dark; }
 body {
-  background: var(--off-white);
-  color: var(--ink);
-  font-family: var(--sans);
-  font-size: 15px;
+  background: var(--bg);
+  color: var(--ink-1);
+  font-family: var(--font);
+  font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   height: 100%;
   overflow: hidden;
+  transition: background 0.3s var(--ease-out), color 0.3s var(--ease-out);
 }
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 0; height: 0; }
+::selection { background: var(--accent-mid); }
 
-/* ── APP SHELL ── */
-.app { display: flex; height: 100vh; height: 100dvh; overflow: hidden; }
+/* Aurora background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--aurora);
+  pointer-events: none;
+  z-index: 0;
+}
 
-/* ── SIDEBAR (desktop) ── */
+/* ═══════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════ */
+.app { display: flex; height: 100dvh; overflow: hidden; position: relative; z-index: 1; }
+
+/* ═══════════════════════════════════════
+   SIDEBAR — Liquid Glass
+═══════════════════════════════════════ */
 .sidebar {
-  width: 240px;
-  min-width: 240px;
-  background: rgba(255,255,255,0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-right: 1px solid var(--border);
+  width: var(--nav-w);
+  min-width: var(--nav-w);
+  background: var(--glass);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border-right: 1px solid var(--glass-border);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   flex-shrink: 0;
+  position: relative;
+  z-index: 10;
 }
 
 .sidebar-logo {
-  padding: 28px 20px 20px;
-  border-bottom: 1px solid var(--border);
+  padding: 22px 18px 16px;
+  border-bottom: 1px solid var(--border-1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.logo-wordmark {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--ink);
+.logo-icon {
+  width: 30px; height: 30px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  font-size: 13px;
+  font-weight: 800;
   letter-spacing: -0.5px;
+  box-shadow: 0 4px 12px rgba(0,102,255,0.35);
+  flex-shrink: 0;
 }
 
-.logo-wordmark span { color: var(--blue); }
-
-.logo-sub {
-  font-size: 11px;
-  color: var(--ink4);
-  margin-top: 1px;
-  letter-spacing: 0.2px;
+.logo-text { font-size: 15px; font-weight: 700; color: var(--ink-1); letter-spacing: -0.3px; }
+.logo-badge {
+  margin-left: auto;
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 6px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 20px;
+  letter-spacing: 0.3px;
 }
 
 .sidebar-section {
-  padding: 20px 20px 6px;
-  font-size: 11px;
+  padding: 18px 14px 4px;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: var(--ink4);
+  color: var(--ink-4);
 }
 
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  margin: 1px 8px;
-  border-radius: var(--radius-sm);
+  gap: 9px;
+  padding: 7px 10px;
+  margin: 1px 6px;
+  border-radius: var(--r-sm);
   cursor: pointer;
-  color: var(--ink2);
-  font-size: 14px;
+  color: var(--ink-3);
+  font-size: 13.5px;
   font-weight: 450;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.12s, color 0.12s;
   user-select: none;
-  -webkit-user-select: none;
   position: relative;
 }
 
-.nav-item:hover { background: rgba(0,0,0,0.04); color: var(--ink); }
-
-.nav-item.active {
-  background: var(--blue-soft);
-  color: var(--blue);
-  font-weight: 500;
-}
+.nav-item:hover { background: var(--border-1); color: var(--ink-1); }
+.nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
 
 .nav-icon {
-  width: 28px; height: 28px;
+  width: 24px; height: 24px;
   display: flex; align-items: center; justify-content: center;
-  border-radius: var(--radius-xs);
   font-size: 14px;
   flex-shrink: 0;
-  background: transparent;
-  transition: background 0.15s;
+  opacity: 0.7;
+  transition: opacity 0.12s;
 }
 
-.nav-item.active .nav-icon { background: var(--blue-mid); }
+.nav-item.active .nav-icon,
+.nav-item:hover .nav-icon { opacity: 1; }
 
 .nav-badge {
   margin-left: auto;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
   padding: 1px 6px;
   border-radius: 20px;
-  min-width: 20px;
+  min-width: 18px;
   text-align: center;
+  line-height: 16px;
 }
 
-.badge-red-pill    { background: var(--red);    color: white; }
-.badge-yellow-pill { background: var(--yellow); color: white; }
-.badge-blue-pill   { background: var(--blue);   color: white; }
+.badge-red-pill  { background: var(--red);    color: white; }
+.badge-blue-pill { background: var(--accent);  color: white; }
+.badge-notif     { background: var(--red); color: white; }
 
 .sidebar-bottom {
   margin-top: auto;
-  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
-  border-top: 1px solid var(--border);
+  padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border-1);
 }
 
 .user-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px;
-  border-radius: var(--radius-sm);
+  gap: 9px;
+  padding: 8px 6px;
+  border-radius: var(--r-sm);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.12s;
 }
-
-.user-row:hover { background: var(--off-white); }
+.user-row:hover { background: var(--border-1); }
 
 .avatar {
-  width: 32px; height: 32px;
+  width: 30px; height: 30px;
   border-radius: 50%;
-  background: var(--blue);
+  background: linear-gradient(135deg, var(--accent), var(--purple));
   display: flex; align-items: center; justify-content: center;
   color: white;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   flex-shrink: 0;
 }
 
-.user-name  { font-size: 14px; font-weight: 500; color: var(--ink); }
-.user-role  { font-size: 11px; color: var(--ink4); }
+.user-name { font-size: 13px; font-weight: 600; color: var(--ink-1); }
+.user-role { font-size: 11px; color: var(--ink-4); }
 
-.logout-link {
-  margin-top: 6px;
-  width: 100%;
-  padding: 8px 12px;
-  background: transparent;
-  border: none;
-  color: var(--red);
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  text-align: left;
-  border-radius: var(--radius-sm);
-  transition: background 0.15s;
+.sidebar-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
 }
 
-.logout-link:hover { background: var(--red-soft); }
-
-/* ── MAIN ── */
-.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
-
-.topbar {
-  height: 52px;
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
+.sidebar-btn {
+  flex: 1;
+  padding: 7px;
+  background: transparent;
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-sm);
+  color: var(--ink-3);
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.12s;
   display: flex;
   align-items: center;
-  padding: 0 24px;
-  gap: 12px;
+  justify-content: center;
+  gap: 4px;
+}
+.sidebar-btn:hover { background: var(--border-1); color: var(--ink-1); }
+.sidebar-btn.danger:hover { background: var(--red-soft); color: var(--red); border-color: rgba(255,59,48,0.2); }
+
+/* ═══════════════════════════════════════
+   MAIN
+═══════════════════════════════════════ */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+/* ═══════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════ */
+.topbar {
+  height: var(--nav-h);
+  background: var(--glass);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border-bottom: 1px solid var(--border-1);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 10px;
   flex-shrink: 0;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 50;
 }
 
-.topbar-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--ink);
-  flex: 1;
-  letter-spacing: -0.2px;
+.topbar-title { font-size: 15px; font-weight: 600; color: var(--ink-1); flex: 1; letter-spacing: -0.2px; }
+
+.search-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-sm);
+  color: var(--ink-4);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+  min-width: 180px;
+}
+.search-trigger:hover { border-color: var(--border-2); color: var(--ink-3); background: var(--surface-3); }
+.search-kbd {
+  margin-left: auto;
+  display: flex;
+  gap: 2px;
+}
+.kbd {
+  padding: 1px 5px;
+  background: var(--surface-3);
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-4);
 }
 
 .health-chip {
@@ -242,32 +370,54 @@ body {
   gap: 5px;
   padding: 4px 10px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
 }
-
-.health-chip.green  { background: var(--green-soft);  color: #1a8a2e; }
-.health-chip.yellow { background: var(--yellow-soft); color: #b36400; }
-.health-chip.red    { background: var(--red-soft);    color: #cc2f26; }
+.health-chip.green  { background: var(--green-soft);  color: #008f3a; }
+.health-chip.yellow { background: var(--yellow-soft); color: #9a5800; }
+.health-chip.red    { background: var(--red-soft);    color: #c0291f; }
+[data-theme="dark"] .health-chip.green  { color: var(--green); }
+[data-theme="dark"] .health-chip.yellow { color: var(--yellow); }
+[data-theme="dark"] .health-chip.red    { color: var(--red); }
 
 .health-dot {
   width: 6px; height: 6px;
   border-radius: 50%;
 }
 .green  .health-dot { background: var(--green); }
-.yellow .health-dot { background: var(--yellow); }
-.red    .health-dot { background: var(--red); animation: blink 1s infinite; }
+.yellow .health-dot { background: var(--yellow); animation: pulse 2s infinite; }
+.red    .health-dot { background: var(--red); animation: pulse 0.8s infinite; }
 
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
 
-.topbar-time {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--ink4);
-  letter-spacing: 0.3px;
+.topbar-time { font-family: var(--mono); font-size: 11px; color: var(--ink-4); letter-spacing: 0.3px; }
+
+.icon-btn {
+  width: 32px; height: 32px;
+  border-radius: var(--r-sm);
+  border: none;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  transition: background 0.12s, color 0.12s;
+  position: relative;
+  flex-shrink: 0;
+}
+.icon-btn:hover { background: var(--border-1); color: var(--ink-1); }
+.icon-btn .notif-dot {
+  position: absolute;
+  top: 4px; right: 4px;
+  width: 7px; height: 7px;
+  background: var(--red);
+  border-radius: 50%;
+  border: 1.5px solid var(--surface-1);
 }
 
-/* ── CONTENT ── */
+/* ═══════════════════════════════════════
+   CONTENT
+═══════════════════════════════════════ */
 .content {
   flex: 1;
   overflow-y: auto;
@@ -275,66 +425,124 @@ body {
   padding-bottom: calc(24px + env(safe-area-inset-bottom));
 }
 
-/* ── CARDS ── */
-.card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-}
-
-.card-body { padding: 20px; }
-.card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.card-title { font-size: 14px; font-weight: 600; color: var(--ink); }
-.card-meta  { font-size: 12px; color: var(--ink4); }
-
-/* ── STAT GRID ── */
-.stat-grid {
+/* ═══════════════════════════════════════
+   BENTO GRID — The signature layout
+═══════════════════════════════════════ */
+.bento {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(12, 1fr);
   gap: 12px;
   margin-bottom: 20px;
 }
 
-.stat-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px 18px;
+.bento-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  padding: 20px;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 
-.stat-card:hover {
+.bento-card:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow);
+  border-color: var(--border-2);
 }
 
-.stat-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ink4);
-  margin-bottom: 6px;
-  letter-spacing: 0.1px;
+.bento-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--aurora);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
 }
 
-.stat-value {
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: -1px;
+.bento-card:hover::before { opacity: 1; }
+
+/* Span helpers */
+.col-3  { grid-column: span 3; }
+.col-4  { grid-column: span 4; }
+.col-6  { grid-column: span 6; }
+.col-8  { grid-column: span 8; }
+.col-12 { grid-column: span 12; }
+
+/* ═══════════════════════════════════════
+   KPI CARD with sparkline
+═══════════════════════════════════════ */
+.kpi-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-4);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpi-value {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -2px;
   line-height: 1;
-  color: var(--ink);
+  color: var(--ink-1);
+  margin-bottom: 4px;
 }
 
-.stat-value.blue   { color: var(--blue); }
-.stat-value.green  { color: var(--green); }
-.stat-value.yellow { color: var(--yellow); }
-.stat-value.red    { color: var(--red); }
+.kpi-value.accent { color: var(--accent); }
+.kpi-value.green  { color: var(--green); }
+.kpi-value.yellow { color: var(--yellow); }
+.kpi-value.red    { color: var(--red); }
+.kpi-value.purple { color: var(--purple); }
 
-.stat-sub { font-size: 11px; color: var(--ink4); margin-top: 4px; }
+.kpi-sub {
+  font-size: 12px;
+  color: var(--ink-4);
+  margin-bottom: 12px;
+}
 
-/* ── SECTION HEADER ── */
+.trend-up   { color: var(--green); }
+.trend-down { color: var(--red); }
+
+/* Sparkline SVG */
+.sparkline { width: 100%; height: 36px; overflow: visible; }
+.sparkline-line { fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.sparkline-area { opacity: 0.12; }
+
+/* ═══════════════════════════════════════
+   CARDS
+═══════════════════════════════════════ */
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  margin-bottom: 16px;
+  transition: border-color 0.15s;
+}
+
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title { font-size: 13.5px; font-weight: 600; color: var(--ink-1); letter-spacing: -0.1px; }
+.card-meta  { font-size: 12px; color: var(--ink-4); }
+.card-body  { padding: 20px; }
+
+/* ═══════════════════════════════════════
+   SECTION HEADER
+═══════════════════════════════════════ */
 .section-header {
   display: flex;
   align-items: center;
@@ -343,13 +551,15 @@ body {
 }
 
 .section-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--ink);
-  letter-spacing: -0.5px;
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--ink-1);
+  letter-spacing: -0.6px;
 }
 
-/* ── TABLES ── */
+/* ═══════════════════════════════════════
+   TABLES
+═══════════════════════════════════════ */
 .table-wrap { overflow-x: auto; }
 
 table { width: 100%; border-collapse: collapse; }
@@ -357,283 +567,441 @@ table { width: 100%; border-collapse: collapse; }
 th {
   text-align: left;
   padding: 10px 16px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  color: var(--ink4);
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  color: var(--ink-4);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border-1);
   white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
 td {
   padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-1);
   font-size: 13px;
-  color: var(--ink);
+  color: var(--ink-1);
   vertical-align: middle;
 }
 
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: var(--off-white); }
+tr:hover td { background: var(--surface-2); }
 
-/* ── BADGES ── */
+/* ═══════════════════════════════════════
+   BADGES
+═══════════════════════════════════════ */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 3px 8px;
+  padding: 2px 8px;
   border-radius: 6px;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.1px;
 }
 
-.badge-blue   { background: var(--blue-soft);   color: var(--blue); }
-.badge-green  { background: var(--green-soft);  color: #1a8a2e; }
-.badge-yellow { background: var(--yellow-soft); color: #b36400; }
-.badge-red    { background: var(--red-soft);    color: #cc2f26; }
-.badge-gray   { background: var(--off-white);   color: var(--ink3); border: 1px solid var(--border); }
+.badge-blue   { background: var(--accent-soft); color: var(--accent); }
+.badge-green  { background: var(--green-soft);  color: var(--green); }
+.badge-yellow { background: var(--yellow-soft); color: var(--yellow); }
+.badge-red    { background: var(--red-soft);    color: var(--red); }
+.badge-purple { background: var(--purple-soft); color: var(--purple); }
+.badge-gray   { background: var(--surface-2);   color: var(--ink-3); border: 1px solid var(--border-2); }
 
-/* ── BUTTONS ── */
+[data-theme="dark"] .badge-green  { color: #4ddb80; }
+[data-theme="dark"] .badge-yellow { color: #ffb340; }
+[data-theme="dark"] .badge-red    { color: #ff6b63; }
+
+/* ═══════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════ */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  font-family: var(--sans);
-  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: var(--r-sm);
+  font-family: var(--font);
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.12s;
   border: none;
   white-space: nowrap;
-  -webkit-user-select: none;
   user-select: none;
 }
 
 .btn:active { transform: scale(0.97); }
 
 .btn-primary {
-  background: var(--blue);
+  background: var(--accent);
   color: white;
+  box-shadow: 0 2px 8px rgba(0,102,255,0.3);
 }
-.btn-primary:hover { background: #0077ed; }
-
-.btn-secondary {
-  background: var(--off-white);
-  color: var(--ink);
-  border: 1px solid var(--border);
+.btn-primary:hover {
+  background: #0055dd;
+  box-shadow: 0 4px 16px rgba(0,102,255,0.4);
+  transform: translateY(-1px);
 }
-.btn-secondary:hover { background: var(--border); }
 
 .btn-ghost {
   background: transparent;
-  color: var(--ink3);
-  border: 1px solid var(--border);
+  color: var(--ink-3);
+  border: 1px solid var(--border-2);
 }
-.btn-ghost:hover { background: var(--off-white); color: var(--ink); }
+.btn-ghost:hover { background: var(--surface-2); color: var(--ink-1); }
 
 .btn-danger {
-  background: var(--red-soft);
-  color: var(--red);
-  border: 1px solid rgba(255,59,48,0.2);
+  background: var(--red);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255,59,48,0.25);
 }
-.btn-danger:hover { background: rgba(255,59,48,0.15); }
+.btn-danger:hover { background: #e02d22; transform: translateY(-1px); }
 
 .btn-success {
   background: var(--green-soft);
-  color: #1a8a2e;
-  border: 1px solid rgba(40,205,65,0.2);
+  color: var(--green);
+  border: 1px solid rgba(0,200,83,0.2);
 }
-.btn-success:hover { background: rgba(40,205,65,0.18); }
+.btn-success:hover { background: rgba(0,200,83,0.18); }
 
-.btn-sm { padding: 5px 10px; font-size: 12px; border-radius: var(--radius-xs); }
+.btn-sm { padding: 5px 10px; font-size: 12px; border-radius: var(--r-xs); }
+.btn-xs { padding: 3px 8px; font-size: 11px; border-radius: var(--r-xs); }
 
-.btn-icon {
-  width: 32px; height: 32px;
-  padding: 0;
-  border-radius: var(--radius-xs);
+.icon-action {
+  width: 28px; height: 28px;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--border-2);
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--off-white);
-  border: 1px solid var(--border);
-  color: var(--ink3);
-  cursor: pointer;
-  transition: all 0.15s;
-  font-size: 14px;
+  font-size: 13px;
+  transition: all 0.12s;
 }
+.icon-action:hover { background: var(--surface-2); color: var(--ink-1); border-color: var(--border-2); }
+.icon-action:active { transform: scale(0.93); }
 
-.btn-icon:hover { background: var(--border); color: var(--ink); }
-.btn-icon:active { transform: scale(0.93); }
-
-/* ── FORMS ── */
-.form-group { margin-bottom: 16px; }
+/* ═══════════════════════════════════════
+   FORMS
+═══════════════════════════════════════ */
+.form-group { margin-bottom: 14px; }
 
 .form-label {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  color: var(--ink2);
-  margin-bottom: 6px;
+  color: var(--ink-3);
+  margin-bottom: 5px;
+  letter-spacing: 0.1px;
 }
 
 .form-input, .form-select, .form-textarea {
   width: 100%;
-  padding: 10px 12px;
-  background: var(--white);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius-sm);
-  color: var(--ink);
-  font-family: var(--sans);
-  font-size: 14px;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  padding: 9px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-sm);
+  color: var(--ink-1);
+  font-family: var(--font);
+  font-size: 13.5px;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
   outline: none;
   appearance: none;
-  -webkit-appearance: none;
 }
 
 .form-input:focus, .form-select:focus, .form-textarea:focus {
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(0,113,227,0.12);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  background: var(--surface-1);
 }
 
 .form-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23aeaeb2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238e8ea0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 32px;
+  background-position: right 10px center;
+  padding-right: 28px;
+  cursor: pointer;
 }
 
-.form-textarea { resize: vertical; min-height: 88px; line-height: 1.5; }
+.form-textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
 
-/* ── TABS ── */
+/* ═══════════════════════════════════════
+   TABS
+═══════════════════════════════════════ */
 .tabs {
   display: flex;
-  gap: 2px;
-  background: var(--off-white);
-  border-radius: var(--radius-sm);
+  gap: 1px;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
   padding: 3px;
-  margin-bottom: 20px;
   width: fit-content;
+  margin-bottom: 18px;
 }
 
 .tab {
-  padding: 6px 14px;
-  border-radius: var(--radius-xs);
-  font-size: 13px;
+  padding: 6px 13px;
+  border-radius: var(--r-xs);
+  font-size: 12.5px;
   font-weight: 500;
-  color: var(--ink3);
+  color: var(--ink-3);
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
-  -webkit-user-select: none;
   user-select: none;
 }
 
-.tab:hover { color: var(--ink2); }
+.tab:hover { color: var(--ink-2); }
+.tab.active { background: var(--surface-1); color: var(--ink-1); box-shadow: var(--shadow-xs); font-weight: 600; }
 
-.tab.active {
-  background: var(--white);
-  color: var(--ink);
-  box-shadow: var(--shadow-sm);
+/* ═══════════════════════════════════════
+   COMMAND PALETTE
+═══════════════════════════════════════ */
+.cmd-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+  animation: fadeIn 0.15s var(--ease-out);
 }
 
-/* ── MODAL ── */
+.cmd-box {
+  width: min(560px, calc(100vw - 32px));
+  background: var(--surface-1);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  animation: cmdIn 0.2s var(--ease);
+}
+
+@keyframes cmdIn {
+  from { transform: scale(0.96) translateY(-8px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.cmd-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-1);
+}
+
+.cmd-input-icon { font-size: 16px; color: var(--ink-4); flex-shrink: 0; }
+
+.cmd-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font);
+  font-size: 15px;
+  color: var(--ink-1);
+  font-weight: 400;
+}
+
+.cmd-input::placeholder { color: var(--ink-4); }
+
+.cmd-results { max-height: 380px; overflow-y: auto; padding: 6px; }
+
+.cmd-group-label {
+  padding: 6px 10px 3px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-4);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.cmd-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.cmd-item:hover, .cmd-item.selected { background: var(--accent-soft); }
+.cmd-item:hover .cmd-item-label, .cmd-item.selected .cmd-item-label { color: var(--accent); }
+
+.cmd-item-icon { width: 28px; height: 28px; background: var(--surface-2); border-radius: var(--r-xs); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+.cmd-item-label { font-size: 13.5px; color: var(--ink-1); font-weight: 450; }
+.cmd-item-desc  { font-size: 11.5px; color: var(--ink-4); margin-left: auto; }
+
+.cmd-footer {
+  padding: 8px 16px;
+  border-top: 1px solid var(--border-1);
+  display: flex;
+  gap: 14px;
+  font-size: 11px;
+  color: var(--ink-4);
+}
+
+.cmd-footer span { display: flex; align-items: center; gap: 4px; }
+
+/* ═══════════════════════════════════════
+   MODAL
+═══════════════════════════════════════ */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
   z-index: 1000;
-  padding: 0;
-  animation: fadeIn 0.2s ease;
+  animation: fadeIn 0.2s var(--ease-out);
 }
 
 @media (min-width: 640px) {
   .modal-overlay { align-items: center; padding: 20px; }
 }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
 .modal {
-  background: var(--white);
-  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--surface-1);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
   padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
   width: 100%;
   max-width: 480px;
-  box-shadow: var(--shadow-lg);
-  animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-  max-height: 90vh;
+  box-shadow: var(--shadow-xl);
+  animation: sheetUp 0.3s var(--ease);
+  max-height: 90dvh;
   overflow-y: auto;
+  border: 1px solid var(--border-2);
+  border-bottom: none;
 }
 
 @media (min-width: 640px) {
   .modal {
-    border-radius: var(--radius);
-    padding: 28px;
-    animation: scaleIn 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+    border-radius: var(--r-xl);
+    animation: scaleIn 0.2s var(--ease);
+    border: 1px solid var(--border-2);
   }
 }
 
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
-}
+@keyframes sheetUp  { from{transform:translateY(100%)} to{transform:translateY(0)} }
+@keyframes scaleIn  { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
 
-@keyframes scaleIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to   { transform: scale(1);    opacity: 1; }
-}
+.modal-handle { width: 32px; height: 4px; background: var(--border-2); border-radius: 2px; margin: 0 auto 20px; }
+@media (min-width:640px) { .modal-handle { display:none; } }
 
-.modal-handle {
-  width: 36px; height: 4px;
-  background: var(--border2);
-  border-radius: 2px;
-  margin: 0 auto 20px;
-}
-
-@media (min-width: 640px) { .modal-handle { display: none; } }
-
-.modal-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 20px;
-  letter-spacing: -0.3px;
-}
+.modal-title { font-size: 17px; font-weight: 700; color: var(--ink-1); margin-bottom: 20px; letter-spacing: -0.3px; }
 
 .modal-actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: flex-end;
-  margin-top: 24px;
+  margin-top: 22px;
   padding-top: 16px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-1);
 }
 
-/* ── LOGIN ── */
+/* ═══════════════════════════════════════
+   NOTIFICATION DRAWER
+═══════════════════════════════════════ */
+.notif-drawer {
+  position: fixed;
+  top: var(--nav-h);
+  right: 0;
+  width: min(380px, 100vw);
+  height: calc(100dvh - var(--nav-h));
+  background: var(--glass);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border-left: 1px solid var(--glass-border);
+  z-index: 500;
+  overflow-y: auto;
+  animation: drawerIn 0.25s var(--ease);
+  box-shadow: var(--shadow-lg);
+}
+
+@keyframes drawerIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+
+.notif-header {
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid var(--border-1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notif-title { font-size: 15px; font-weight: 700; color: var(--ink-1); }
+
+.notif-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-1);
+  transition: background 0.1s;
+  cursor: pointer;
+}
+
+.notif-item:hover { background: var(--surface-2); }
+.notif-item.unread { background: var(--accent-soft); }
+
+.notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 5px; }
+.notif-dot.read { background: transparent; border: 1px solid var(--border-2); }
+.notif-text { font-size: 13px; color: var(--ink-2); line-height: 1.4; }
+.notif-time { font-size: 11px; color: var(--ink-4); margin-top: 3px; }
+
+/* ═══════════════════════════════════════
+   LOGIN
+═══════════════════════════════════════ */
 .login-page {
   min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--off-white);
+  background: var(--bg);
   padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Aurora blobs on login */
+.login-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.login-blob-1 {
+  width: 500px; height: 500px;
+  background: rgba(0,102,255,0.08);
+  top: -100px; right: -100px;
+}
+
+.login-blob-2 {
+  width: 400px; height: 400px;
+  background: rgba(191,90,242,0.06);
+  bottom: -100px; left: -100px;
 }
 
 .login-box {
   width: 100%;
   max-width: 360px;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 20px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-xl);
   padding: 40px 32px;
   box-shadow: var(--shadow-lg);
+  position: relative;
+  z-index: 1;
 }
 
 .login-logo {
@@ -642,415 +1010,295 @@ tr:hover td { background: var(--off-white); }
 }
 
 .login-mark {
-  width: 60px; height: 60px;
-  background: var(--blue);
+  width: 56px; height: 56px;
+  background: var(--accent);
   border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   margin: 0 auto 14px;
-  font-size: 24px;
-  font-weight: 800;
-  color: white;
-  font-family: var(--sans);
+  font-size: 22px; font-weight: 900; color: white;
+  box-shadow: 0 8px 32px rgba(0,102,255,0.35);
   letter-spacing: -1px;
-  box-shadow: 0 8px 24px rgba(0,113,227,0.3);
 }
 
-.login-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ink);
-  letter-spacing: -0.5px;
-}
-
-.login-sub {
-  font-size: 13px;
-  color: var(--ink4);
-  margin-top: 3px;
-}
+.login-title { font-size: 19px; font-weight: 800; color: var(--ink-1); letter-spacing: -0.5px; }
+.login-sub   { font-size: 13px; color: var(--ink-4); margin-top: 3px; }
 
 .login-error {
   background: var(--red-soft);
   border: 1px solid rgba(255,59,48,0.2);
-  border-radius: var(--radius-sm);
-  color: #cc2f26;
+  border-radius: var(--r-sm);
+  color: var(--red);
   padding: 10px 14px;
   font-size: 13px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
-/* ── PROGRESS ── */
-.progress-track {
-  height: 6px;
-  background: var(--off-white);
-  border-radius: 3px;
-  overflow: hidden;
-  margin-top: 8px;
-}
-
-.progress-fill {
-  height: 100%;
-  background: var(--blue);
-  border-radius: 3px;
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.progress-fill.done { background: var(--green); }
-
-/* ── CHECKLIST ── */
-.check-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: background 0.1s;
-  border-radius: var(--radius-xs);
-  padding-left: 4px;
-}
-
-.check-row:last-child { border-bottom: none; }
-.check-row:hover { background: var(--off-white); }
-
-.check-box {
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  border: 2px solid var(--border2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.2s;
-  font-size: 10px;
-}
-
-.check-box.done {
-  background: var(--green);
-  border-color: var(--green);
-  color: white;
-}
-
-.check-text { font-size: 13px; color: var(--ink); }
-.check-text.done { color: var(--ink4); text-decoration: line-through; }
-
-/* ── EMPTY STATE ── */
-.empty {
-  padding: 48px 24px;
-  text-align: center;
-  color: var(--ink4);
-}
-
-.empty-icon { font-size: 32px; margin-bottom: 10px; opacity: 0.5; }
-.empty-text { font-size: 14px; }
-
-/* ── LOADING ── */
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px;
-  gap: 10px;
-  color: var(--ink4);
-  font-size: 14px;
-}
-
-.spinner {
-  width: 18px; height: 18px;
-  border: 2px solid var(--border2);
-  border-top-color: var(--blue);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── TOAST ── */
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
 .toasts {
   position: fixed;
   bottom: calc(20px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2000;
+  z-index: 9500;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
   pointer-events: none;
   width: min(380px, calc(100vw - 32px));
 }
 
 .toast {
-  padding: 12px 16px;
-  background: rgba(29,29,31,0.92);
+  padding: 11px 16px;
+  background: rgba(10,10,15,0.92);
   backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   color: white;
   border-radius: 12px;
   font-size: 13px;
   font-weight: 500;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  animation: toastIn 0.3s cubic-bezier(0.32,0.72,0,1);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  box-shadow: var(--shadow-lg);
+  animation: toastIn 0.25s var(--ease);
+  display: flex; align-items: center; gap: 8px;
   pointer-events: auto;
   width: 100%;
 }
 
-.toast.error   { background: rgba(204,47,38,0.92); }
-.toast.success { background: rgba(26,138,46,0.92); }
+[data-theme="dark"] .toast { background: rgba(255,255,255,0.1); border: 1px solid var(--border-2); }
 
-@keyframes toastIn {
-  from { transform: translateY(8px); opacity: 0; }
-  to   { transform: translateY(0);   opacity: 1; }
-}
+.toast.error   { background: rgba(192,41,31,0.92); }
+.toast.success { background: rgba(0,143,58,0.92); }
 
-/* ── DIVIDER ── */
-.divider { height: 1px; background: var(--border); margin: 16px 0; }
+@keyframes toastIn { from{transform:translateY(10px);opacity:0} to{transform:translateY(0);opacity:1} }
 
-/* ── GRID ── */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+/* ═══════════════════════════════════════
+   PROGRESS
+═══════════════════════════════════════ */
+.progress-track { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+.progress-fill  { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.6s var(--ease); }
+.progress-fill.green { background: var(--green); }
 
-/* ── CHANNEL PILLS ── */
-.channel-pills { display: flex; gap: 6px; flex-wrap: wrap; }
-
-.channel-pill {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 500;
-  border: 1px solid var(--border2);
-  background: var(--white);
-  color: var(--ink3);
-  cursor: pointer;
-  transition: all 0.15s;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.channel-pill:hover { border-color: var(--blue); color: var(--blue); }
-.channel-pill.active { background: var(--blue); border-color: var(--blue); color: white; }
-
-/* ── INTERACTION ROW ── */
-.int-row {
+/* ═══════════════════════════════════════
+   CHECKLIST
+═══════════════════════════════════════ */
+.check-row {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  gap: 11px;
   padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  align-items: flex-start;
-}
-
-.int-row:last-child { border-bottom: none; }
-.int-user  { font-size: 11px; color: var(--blue); font-weight: 600; width: 72px; flex-shrink: 0; font-family: var(--mono); }
-.int-text  { flex: 1; font-size: 12px; color: var(--ink2); word-break: break-word; line-height: 1.4; }
-.int-badge { flex-shrink: 0; }
-
-/* ── PATTERN ROW ── */
-.pattern-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-}
-
-.pattern-row:last-child { border-bottom: none; }
-.pattern-trigger { color: var(--ink); font-size: 13px; font-family: var(--mono); flex: 1; }
-.pattern-arrow   { color: var(--ink4); font-size: 12px; }
-.pattern-intent  { color: var(--blue); font-size: 13px; width: 110px; font-family: var(--mono); }
-.pattern-count   { color: var(--ink4); font-size: 11px; width: 50px; text-align: right; }
-
-/* ── ACTION ROW ── */
-.action-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-1);
+  cursor: pointer;
+  border-radius: var(--r-xs);
+  padding-left: 2px;
   transition: background 0.1s;
 }
+.check-row:last-child { border-bottom: none; }
+.check-row:hover { background: var(--surface-2); }
 
-.action-row:last-child { border-bottom: none; }
-.action-row:hover { background: var(--off-white); }
-.action-icon { font-size: 22px; width: 40px; text-align: center; flex-shrink: 0; }
-.action-info { flex: 1; }
-.action-title { font-size: 14px; font-weight: 500; color: var(--ink); }
-.action-desc  { font-size: 12px; color: var(--ink4); margin-top: 1px; }
-
-/* ── CMD GRID ── */
-.cmd-section-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink4);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 24px 0 10px;
+.check-box {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s var(--ease);
+  font-size: 9px;
 }
 
-.cmd-section-title:first-child { margin-top: 0; }
+.check-box.done { background: var(--green); border-color: var(--green); color: white; }
+.check-text { font-size: 13px; color: var(--ink-1); }
+.check-text.done { color: var(--ink-4); text-decoration: line-through; }
 
-.cmd-row {
+/* ═══════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════ */
+.empty { padding: 48px 24px; text-align: center; color: var(--ink-4); }
+.empty-icon { font-size: 28px; margin-bottom: 10px; opacity: 0.5; }
+.empty-text { font-size: 13.5px; }
+
+/* ═══════════════════════════════════════
+   LOADING
+═══════════════════════════════════════ */
+.loading { display:flex; align-items:center; justify-content:center; padding:48px; gap:10px; color:var(--ink-4); font-size:13px; }
+.spinner { width:16px; height:16px; border:2px solid var(--border-2); border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* ═══════════════════════════════════════
+   ACTIVITY FEED
+═══════════════════════════════════════ */
+.feed-item {
   display: flex;
-  align-items: flex-start;
   gap: 12px;
   padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
+  border-bottom: 1px solid var(--border-1);
+  align-items: flex-start;
+}
+.feed-item:last-child { border-bottom: none; }
+.feed-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.feed-content { flex: 1; }
+.feed-text { font-size: 13px; color: var(--ink-2); line-height: 1.4; }
+.feed-time { font-size: 11px; color: var(--ink-4); margin-top: 2px; font-family: var(--mono); }
+
+/* ═══════════════════════════════════════
+   REVENUE CARD
+═══════════════════════════════════════ */
+.mrr-display {
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  color: var(--ink-1);
+  line-height: 1;
 }
 
-.cmd-row:last-child { border-bottom: none; }
+.mrr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
 
-.cmd-name {
-  font-family: var(--mono);
+/* ═══════════════════════════════════════
+   CHANNEL PILLS
+═══════════════════════════════════════ */
+.channel-pills { display:flex; gap:6px; flex-wrap:wrap; }
+.channel-pill {
+  padding: 5px 11px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
-  color: var(--blue);
-  width: 180px;
-  flex-shrink: 0;
-  word-break: break-all;
+  border: 1px solid var(--border-2);
+  background: var(--surface-1);
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: all 0.12s;
+  user-select: none;
+}
+.channel-pill:hover { border-color: var(--accent); color: var(--accent); }
+.channel-pill.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+/* ═══════════════════════════════════════
+   BAR CHART
+═══════════════════════════════════════ */
+.bar-chart { display:flex; flex-direction:column; gap:8px; }
+.bar-row { display:flex; align-items:center; gap:10px; }
+.bar-label { font-size:11.5px; color:var(--ink-3); width:110px; flex-shrink:0; font-family:var(--mono); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.bar-track { flex:1; height:6px; background:var(--surface-3); border-radius:3px; overflow:hidden; }
+.bar-fill  { height:100%; background:var(--accent); border-radius:3px; transition:width 0.7s var(--ease); }
+.bar-fill.green { background:var(--green); }
+.bar-count { font-size:11.5px; color:var(--ink-4); width:28px; text-align:right; font-family:var(--mono); }
+
+/* ═══════════════════════════════════════
+   INTERACTION ROW
+═══════════════════════════════════════ */
+.int-row { display:flex; gap:12px; padding:10px 0; border-bottom:1px solid var(--border-1); align-items:flex-start; }
+.int-row:last-child { border-bottom:none; }
+.int-user { font-size:10.5px; color:var(--accent); font-weight:600; width:70px; flex-shrink:0; font-family:var(--mono); }
+.int-text { flex:1; font-size:12px; color:var(--ink-2); word-break:break-word; line-height:1.4; }
+
+/* ═══════════════════════════════════════
+   PATTERN ROW
+═══════════════════════════════════════ */
+.pattern-row { display:flex; align-items:center; gap:10px; padding:11px 16px; border-bottom:1px solid var(--border-1); }
+.pattern-row:last-child { border-bottom:none; }
+.pattern-trigger { color:var(--ink-1); font-size:13px; font-family:var(--mono); flex:1; }
+.pattern-arrow   { color:var(--ink-5); font-size:11px; }
+.pattern-intent  { color:var(--accent); font-size:13px; width:110px; font-family:var(--mono); }
+.pattern-count   { color:var(--ink-4); font-size:11px; width:48px; text-align:right; }
+
+/* ═══════════════════════════════════════
+   DEPLOY PANEL
+═══════════════════════════════════════ */
+.deploy-card {
+  background: linear-gradient(135deg, rgba(0,102,255,0.06), rgba(191,90,242,0.06));
+  border: 1px solid var(--accent-mid);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  margin-bottom: 16px;
 }
 
-.cmd-desc { font-size: 13px; color: var(--ink2); flex: 1; line-height: 1.4; }
-.cmd-detail {
-  font-size: 12px;
-  color: var(--ink4);
-  margin-top: 4px;
-  padding: 8px 10px;
-  background: var(--off-white);
-  border-radius: var(--radius-xs);
-  border-left: 2px solid var(--blue);
-}
+/* ═══════════════════════════════════════
+   GRID HELPERS
+═══════════════════════════════════════ */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
 
-/* ── MOBILE BOTTOM NAV ── */
+/* ═══════════════════════════════════════
+   UPTIME
+═══════════════════════════════════════ */
+.uptime-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.uptime-dot.up      { background:var(--green); box-shadow:0 0 8px rgba(0,200,83,0.4); animation:pulse 3s infinite; }
+.uptime-dot.down    { background:var(--red);   box-shadow:0 0 8px rgba(255,59,48,0.4); animation:pulse 0.8s infinite; }
+.uptime-dot.checking { background:var(--yellow); animation:pulse 1.5s infinite; }
+
+/* ═══════════════════════════════════════
+   MOBILE BOTTOM NAV
+═══════════════════════════════════════ */
 .bottom-nav {
   display: none;
   position: fixed;
   bottom: 0; left: 0; right: 0;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
+  background: var(--glass);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border-top: 1px solid var(--glass-border);
   padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
   z-index: 200;
   justify-content: space-around;
 }
 
-.bottom-nav-item {
+.bnav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  padding: 4px 8px;
-  min-width: 52px;
+  gap: 2px;
+  padding: 4px 10px;
+  min-width: 48px;
   cursor: pointer;
-  -webkit-user-select: none;
   user-select: none;
   position: relative;
+  border-radius: var(--r-sm);
+  transition: background 0.1s;
 }
 
-.bottom-nav-icon {
-  font-size: 22px;
-  line-height: 1;
-  transition: transform 0.15s;
-}
+.bnav-item:active { transform: scale(0.93); }
 
-.bottom-nav-item.active .bottom-nav-icon { transform: scale(1.1); }
+.bnav-icon { font-size: 20px; line-height: 1; }
+.bnav-label { font-size: 9.5px; font-weight: 500; color: var(--ink-4); transition: color 0.12s; }
+.bnav-item.active .bnav-label { color: var(--accent); }
+.bnav-badge { position:absolute; top:1px; right:6px; width:8px; height:8px; background:var(--red); border-radius:50%; border:1.5px solid var(--bg); }
 
-.bottom-nav-label {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--ink4);
-  transition: color 0.15s;
-}
-
-.bottom-nav-item.active .bottom-nav-label { color: var(--blue); }
-
-.bottom-nav-dot {
-  position: absolute;
-  top: 2px; right: 10px;
-  width: 8px; height: 8px;
-  background: var(--red);
-  border-radius: 50%;
-  border: 1.5px solid white;
-}
-
-/* ── MOBILE RESPONSIVE ── */
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
 @media (max-width: 768px) {
-  .sidebar { display: none; }
-
-  .bottom-nav { display: flex; }
-
+  .sidebar { display:none; }
+  .bottom-nav { display:flex; }
   .main { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
-
-  .content {
-    padding: 16px;
-    padding-bottom: calc(80px + env(safe-area-inset-bottom));
-  }
-
-  .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-
-  .grid-2 { grid-template-columns: 1fr; }
-  .grid-3 { grid-template-columns: repeat(2,1fr); }
-
-  .topbar { padding: 0 16px; }
-  .topbar-time { display: none; }
-
-  .section-title { font-size: 20px; }
-
-  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
-
-  td, th { padding: 10px 12px; font-size: 12px; }
-
-  .cmd-name { width: 130px; }
-
-  .modal { max-height: 85vh; }
+  .content { padding: 16px; padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+  .bento { grid-template-columns: repeat(6, 1fr); gap:10px; }
+  .col-3 { grid-column: span 3; }
+  .col-4 { grid-column: span 3; }
+  .col-6 { grid-column: span 6; }
+  .col-8 { grid-column: span 6; }
+  .col-12 { grid-column: span 6; }
+  .grid-2 { grid-template-columns:1fr; }
+  .grid-3 { grid-template-columns:1fr 1fr; }
+  .topbar { padding:0 14px; }
+  .topbar-time, .search-trigger { display:none; }
+  .section-title { font-size:19px; }
 }
 
 @media (max-width: 480px) {
-  .stat-grid { grid-template-columns: repeat(2,1fr); gap: 8px; }
-  .stat-value { font-size: 26px; }
-  .grid-3 { grid-template-columns: 1fr 1fr; }
+  .bento { grid-template-columns: repeat(4,1fr); gap:8px; }
+  .col-3, .col-4 { grid-column: span 2; }
+  .col-6, .col-8, .col-12 { grid-column: span 4; }
+  .kpi-value { font-size:28px; }
+  .grid-3 { grid-template-columns:1fr; }
 }
-
-/* ── UPTIME CARD ── */
-.uptime-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px 18px;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-}
-
-.uptime-indicator {
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.uptime-indicator.up      { background: var(--green); box-shadow: 0 0 8px rgba(40,205,65,0.4); animation: blink 3s infinite; }
-.uptime-indicator.down    { background: var(--red);   box-shadow: 0 0 8px rgba(255,59,48,0.4); animation: blink 0.8s infinite; }
-.uptime-indicator.checking { background: var(--yellow); animation: blink 1.2s infinite; }
-
-/* ── BAR CHART ── */
-.bar-chart { display: flex; flex-direction: column; gap: 8px; }
-
-.bar-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.bar-label { font-size: 12px; color: var(--ink3); width: 110px; flex-shrink: 0; font-family: var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.bar-track { flex: 1; height: 6px; background: var(--off-white); border-radius: 3px; overflow: hidden; }
-.bar-fill  { height: 100%; background: var(--blue); border-radius: 3px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
-.bar-fill.green { background: var(--green); }
-.bar-count { font-size: 12px; color: var(--ink4); width: 28px; text-align: right; font-family: var(--mono); }
 </style>
 </head>
 <body>
@@ -1061,19 +1309,16 @@ const { useState, useEffect, useCallback, useRef } = React;
 // ── API ──────────────────────────────────
 const api = {
   token: localStorage.getItem('tt'),
-  setToken(t)   { this.token = t; localStorage.setItem('tt', t); },
-  clearToken()  { this.token = null; localStorage.removeItem('tt'); },
+  setToken(t)  { this.token = t; localStorage.setItem('tt', t); },
+  clearToken() { this.token = null; localStorage.removeItem('tt'); },
   async req(method, path, body) {
-    const res = await fetch(path, {
+    const r = await fetch(path, {
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {})
-      },
+      headers: { 'Content-Type':'application/json', ...(this.token ? { Authorization:`Bearer ${this.token}` } : {}) },
       ...(body != null ? { body: JSON.stringify(body) } : {})
     });
-    if (res.status === 401) { this.clearToken(); window.location.reload(); return; }
-    return res.json();
+    if (r.status === 401) { this.clearToken(); window.location.reload(); return; }
+    return r.json();
   },
   get:    p    => api.req('GET', p),
   post:   (p,b)=> api.req('POST', p, b),
@@ -1092,12 +1337,39 @@ function Toasts() {
     </div>
   );
 }
-function toast(msg, type = 'info') {
+function toast(msg, type='info') {
   if (!_setToasts) return;
   const icons = { success:'✓', error:'✕', info:'·' };
   const id = Date.now();
-  _setToasts(p => [...p, { id, msg, type, icon: icons[type] }]);
-  setTimeout(() => _setToasts(p => p.filter(x => x.id !== id)), 3000);
+  _setToasts(p => [...p, { id, msg, type, icon: icons[type] || '·' }]);
+  setTimeout(() => _setToasts(p => p.filter(x => x.id !== id)), 3200);
+}
+
+// ── SPARKLINE ────────────────────────────
+function Sparkline({ data, color = 'var(--accent)', height = 36 }) {
+  if (!data || data.length < 2) return null;
+  const w = 100, h = height;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const pts = data.map((v, i) => [
+    (i / (data.length - 1)) * w,
+    h - ((v - min) / range) * (h * 0.8) - h * 0.1
+  ]);
+  const line = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+  const area = `${line} L${pts[pts.length-1][0]},${h} L0,${h} Z`;
+  return (
+    <svg className="sparkline" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none">
+      <defs>
+        <linearGradient id={`sg-${color.replace(/[^a-z]/gi,'')}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.3"/>
+          <stop offset="100%" stopColor={color} stopOpacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d={area} fill={`url(#sg-${color.replace(/[^a-z]/gi,'')})`} />
+      <path d={line} className="sparkline-line" stroke={color} />
+    </svg>
+  );
 }
 
 // ── CLOCK ────────────────────────────────
@@ -1105,6 +1377,116 @@ function Clock() {
   const [t, setT] = useState(new Date());
   useEffect(() => { const i = setInterval(() => setT(new Date()), 1000); return () => clearInterval(i); }, []);
   return <span className="topbar-time">{t.toLocaleTimeString('en-US', { timeZone:'America/El_Salvador', hour12:false })}</span>;
+}
+
+// ── COMMAND PALETTE ───────────────────────
+function CommandPalette({ onClose, onNavigate }) {
+  const [query, setQuery] = useState('');
+  const [sel, setSel] = useState(0);
+  const inputRef = useRef(null);
+
+  useEffect(() => { inputRef.current?.focus(); }, []);
+
+  const COMMANDS = [
+    { group:'Navigate', icon:'◈', label:'Overview', desc:'Dashboard home', action:() => onNavigate('overview') },
+    { group:'Navigate', icon:'✓', label:'Tasks',    desc:'Task tracker',   action:() => onNavigate('tasks') },
+    { group:'Navigate', icon:'◉', label:'Pipeline', desc:'Sales pipeline', action:() => onNavigate('leads') },
+    { group:'Navigate', icon:'⬡', label:'Bugs',     desc:'Bug tracker',    action:() => onNavigate('bugs') },
+    { group:'Navigate', icon:'⬢', label:'Onboarding',desc:'Client setup',  action:() => onNavigate('onboardings') },
+    { group:'Navigate', icon:'📊', label:'Revenue',  desc:'MRR tracker',   action:() => onNavigate('revenue') },
+    { group:'Navigate', icon:'⚡', label:'Activity', desc:'Live feed',      action:() => onNavigate('activity') },
+    { group:'Navigate', icon:'🚀', label:'Deploy',   desc:'Deploy manager',  action:() => onNavigate('deploy') },
+    { group:'Navigate', icon:'◈', label:'Intelligence',desc:'TITAN analytics',action:() => onNavigate('intelligence') },
+    { group:'Navigate', icon:'⌘', label:'Commands', desc:'All bot commands', action:() => onNavigate('commands') },
+    { group:'Actions',  icon:'📢', label:'Post Announcement', desc:'Slack Control', action:() => onNavigate('slackcontrol') },
+    { group:'Actions',  icon:'⌛', label:'Send Reflection',  desc:'Trigger end-of-day', action:() => api.post('/api/slack/reflection').then(r => { toast(r?.success?'Reflection sent':'Failed', r?.success?'success':'error'); onClose(); }) },
+    { group:'Actions',  icon:'⚡', label:'Trigger Briefing', desc:'Post AI briefing',    action:() => api.post('/api/slack/briefing').then(r => { toast(r?.success?'Briefing triggered':'Failed', r?.success?'success':'error'); onClose(); }) },
+  ];
+
+  const filtered = query
+    ? COMMANDS.filter(c => c.label.toLowerCase().includes(query.toLowerCase()) || c.desc.toLowerCase().includes(query.toLowerCase()))
+    : COMMANDS;
+
+  const groups = [...new Set(filtered.map(c => c.group))];
+
+  useEffect(() => { setSel(0); }, [query]);
+
+  function handleKey(e) {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setSel(s => Math.min(s+1, filtered.length-1)); }
+    if (e.key === 'ArrowUp')   { e.preventDefault(); setSel(s => Math.max(s-1, 0)); }
+    if (e.key === 'Enter')     { filtered[sel]?.action(); onClose(); }
+    if (e.key === 'Escape')    { onClose(); }
+  }
+
+  let idx = -1;
+
+  return (
+    <div className="cmd-overlay" onClick={e => e.target===e.currentTarget && onClose()}>
+      <div className="cmd-box">
+        <div className="cmd-input-wrap">
+          <span className="cmd-input-icon">⌘</span>
+          <input ref={inputRef} className="cmd-input" placeholder="Type a command or search…" value={query} onChange={e => setQuery(e.target.value)} onKeyDown={handleKey} />
+          <span className="kbd" style={{fontSize:11, color:'var(--ink-4)'}}>ESC</span>
+        </div>
+        <div className="cmd-results">
+          {groups.map(group => (
+            <div key={group}>
+              <div className="cmd-group-label">{group}</div>
+              {filtered.filter(c => c.group===group).map(cmd => {
+                idx++;
+                const i = idx;
+                return (
+                  <div key={cmd.label} className={`cmd-item ${sel===i?'selected':''}`}
+                    onClick={() => { cmd.action(); onClose(); }}
+                    onMouseEnter={() => setSel(i)}>
+                    <div className="cmd-item-icon">{cmd.icon}</div>
+                    <span className="cmd-item-label">{cmd.label}</span>
+                    <span className="cmd-item-desc">{cmd.desc}</span>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+          {filtered.length === 0 && <div className="empty" style={{padding:'24px'}}><div className="empty-text">No results for "{query}"</div></div>}
+        </div>
+        <div className="cmd-footer">
+          <span><span className="kbd">↑↓</span> navigate</span>
+          <span><span className="kbd">↵</span> select</span>
+          <span><span className="kbd">ESC</span> close</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── NOTIFICATION DRAWER ───────────────────
+function NotifDrawer({ onClose, notifications, onClear }) {
+  return (
+    <div>
+      <div style={{position:'fixed',inset:0,zIndex:499}} onClick={onClose} />
+      <div className="notif-drawer">
+        <div className="notif-header">
+          <div className="notif-title">Notifications</div>
+          <div style={{display:'flex',gap:8}}>
+            <button className="btn btn-ghost btn-xs" onClick={onClear}>Clear all</button>
+            <button className="icon-action" onClick={onClose}>✕</button>
+          </div>
+        </div>
+        {notifications.length === 0
+          ? <div className="empty"><div className="empty-icon">🔔</div><div className="empty-text">All caught up</div></div>
+          : notifications.map((n,i) => (
+              <div key={i} className={`notif-item ${n.unread?'unread':''}`}>
+                <div className={`notif-dot ${n.unread?'':'read'}`} />
+                <div>
+                  <div className="notif-text">{n.text}</div>
+                  <div className="notif-time">{n.time}</div>
+                </div>
+              </div>
+            ))
+        }
+      </div>
+    </div>
+  );
 }
 
 // ── LOGIN ────────────────────────────────
@@ -1119,39 +1501,43 @@ function Login({ onLogin }) {
     setLoading(true); setErr('');
     try {
       const r = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify({ username: u, password: p })
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ username:u, password:p })
       });
       const d = await r.json();
       if (d.token) { api.setToken(d.token); onLogin(d); }
       else setErr(d.error || 'Authentication failed');
-    } catch { setErr('Connection error. Try again.'); }
+    } catch { setErr('Connection error'); }
     setLoading(false);
   }
 
   return (
     <div className="login-page">
+      <div className="login-blob login-blob-1" />
+      <div className="login-blob login-blob-2" />
       <div className="login-box">
         <div className="login-logo">
           <div className="login-mark">T</div>
           <div className="login-title">TITAN</div>
-          <div className="login-sub">ClinicFlow Operations</div>
+          <div className="login-sub">ClinicFlow Operations Center</div>
         </div>
         {err && <div className="login-error">⚠ {err}</div>}
         <form onSubmit={submit}>
           <div className="form-group">
             <label className="form-label">Username</label>
-            <input className="form-input" value={u} onChange={e => setU(e.target.value)} placeholder="operator id" autoFocus autoCapitalize="none" />
+            <input className="form-input" value={u} onChange={e=>setU(e.target.value)} placeholder="operator id" autoFocus autoCapitalize="none" />
           </div>
           <div className="form-group">
             <label className="form-label">Password</label>
-            <input className="form-input" type="password" value={p} onChange={e => setP(e.target.value)} placeholder="••••••••" />
+            <input className="form-input" type="password" value={p} onChange={e=>setP(e.target.value)} placeholder="••••••••" />
           </div>
-          <button className="btn btn-primary" style={{width:'100%', justifyContent:'center', padding:'12px'}} disabled={loading}>
-            {loading ? 'Signing in…' : 'Sign in →'}
+          <button className="btn btn-primary" style={{width:'100%',justifyContent:'center',padding:'11px',marginTop:4}} disabled={loading}>
+            {loading ? 'Signing in…' : 'Continue →'}
           </button>
         </form>
+        <div style={{marginTop:20,textAlign:'center',fontSize:11,color:'var(--ink-4)'}}>
+          Press <span style={{fontFamily:'var(--mono)'}}>⌘K</span> anywhere for command palette
+        </div>
       </div>
     </div>
   );
@@ -1164,76 +1550,356 @@ function Overview() {
   const load = () => api.get('/api/overview').then(setD);
   useEffect(() => { load(); api.get('/api/uptime').then(setUp); }, []);
 
+  // Mock sparkline data — 30 days trend
+  const spark = {
+    tasks:  [3,5,4,7,6,5,8,7,9,6,5,7,8,6,4,6,7,5,8,9,7,6,8,7,d?.openTasks||0],
+    bugs:   [1,2,1,3,2,1,2,3,2,1,2,1,3,2,1,2,1,3,2,1,2,1,2,1,d?.openBugs||0],
+    leads:  [0,1,1,2,1,2,3,2,3,4,3,4,3,5,4,5,4,6,5,6,5,6,5,6,d?.activeLeads||0],
+    clients:[0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,3,4,4,4,4,5,5,5,5,d?.metrics?.newClients||0],
+  };
+
   if (!d) return <div className="loading"><div className="spinner"/>Loading…</div>;
+
+  const h = d.health;
 
   return (
     <div>
       <div className="section-header">
         <h1 className="section-title">Overview</h1>
-        <button className="btn-icon" onClick={load} title="Refresh">↻</button>
+        <button className="btn btn-ghost btn-sm" onClick={load}>↻ Refresh</button>
       </div>
 
-      {/* Health + Uptime */}
-      <div className="card" style={{marginBottom:16}}>
-        <div className="card-body" style={{display:'flex', alignItems:'center', gap:20, flexWrap:'wrap'}}>
-          <div style={{flex:1, minWidth:200}}>
-            <div style={{fontSize:12, color:'var(--ink4)', marginBottom:4}}>System Health</div>
-            <div style={{fontSize:24, fontWeight:700, letterSpacing:'-0.5px', color: d.health==='green' ? 'var(--green)' : d.health==='yellow' ? 'var(--yellow)' : 'var(--red)'}}>
-              {d.health === 'green' ? 'All Good' : d.health === 'yellow' ? 'Needs Attention' : 'Critical Issues'}
-            </div>
-            <div style={{fontSize:13, color:'var(--ink4)', marginTop:2}}>
-              {d.health==='green' ? 'Board is healthy. Keep shipping.' : d.health==='yellow' ? `${d.blockedTasks} blocked, ${d.openBugs} bugs open.` : `${d.criticalBugs} critical bug${d.criticalBugs>1?'s':''} — act now.`}
-            </div>
+      {/* Health Banner */}
+      <div className={`bento-card col-12`} style={{
+        marginBottom:12,
+        background: h==='green' ? 'linear-gradient(135deg, rgba(0,200,83,0.06), rgba(0,200,83,0.02))' :
+                    h==='yellow'? 'linear-gradient(135deg, rgba(255,149,0,0.06), rgba(255,149,0,0.02))' :
+                    'linear-gradient(135deg, rgba(255,59,48,0.06), rgba(255,59,48,0.02))',
+        border: `1px solid ${h==='green'?'rgba(0,200,83,0.15)':h==='yellow'?'rgba(255,149,0,0.15)':'rgba(255,59,48,0.15)'}`,
+        display:'flex', alignItems:'center', gap:20, flexWrap:'wrap',
+        borderRadius:'var(--r-xl)'
+      }}>
+        <div style={{flex:1, minWidth:180}}>
+          <div style={{fontSize:11,fontWeight:600,color:'var(--ink-4)',textTransform:'uppercase',letterSpacing:'0.6px',marginBottom:6}}>System Health</div>
+          <div style={{fontSize:26,fontWeight:900,letterSpacing:'-1px',color: h==='green'?'var(--green)':h==='yellow'?'var(--yellow)':'var(--red)'}}>
+            {h==='green'?'All Systems Go':h==='yellow'?'Needs Attention':'Critical Issues'}
           </div>
-          <div className="uptime-card" style={{border:'none', boxShadow:'none', padding:0, flex:'none'}}>
-            <div className={`uptime-indicator ${up.status}`} />
-            <div>
-              <div style={{fontSize:13, fontWeight:600, color:'var(--ink)'}}>clinicflow.lat</div>
-              <div style={{fontSize:12, color:'var(--ink4)'}}>{up.status === 'up' ? `Online · ${up.latency}ms` : up.status === 'down' ? 'Offline' : 'Checking…'}</div>
-            </div>
+          <div style={{fontSize:13,color:'var(--ink-3)',marginTop:4}}>
+            {h==='green'?'Board is healthy. Keep shipping.':
+             h==='yellow'?`${d.blockedTasks} tasks blocked, ${d.openBugs} bugs open.`:
+             `${d.criticalBugs} critical bug${d.criticalBugs>1?'s':''} open — act immediately.`}
+          </div>
+        </div>
+        <div style={{display:'flex',alignItems:'center',gap:10}}>
+          <div className={`uptime-dot ${up.status}`} />
+          <div>
+            <div style={{fontSize:13,fontWeight:600,color:'var(--ink-1)'}}>clinicflow.lat</div>
+            <div style={{fontSize:12,color:'var(--ink-4)'}}>{up.status==='up'?`Online · ${up.latency}ms`:up.status==='down'?'⚠ Offline':'Checking…'}</div>
           </div>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="stat-grid">
+      {/* Bento KPI Grid */}
+      <div className="bento">
         {[
-          { label:'Open Tasks',    val:d.openTasks,    sub:`${d.blockedTasks} blocked`,        color: d.blockedTasks>0?'yellow':'' },
-          { label:'Open Bugs',     val:d.openBugs,     sub:`${d.criticalBugs} critical`,       color: d.criticalBugs>0?'red':d.openBugs>5?'yellow':'' },
-          { label:'Active Leads',  val:d.activeLeads,  sub:`${d.wonLeads} won total`,          color: d.activeLeads===0?'yellow':'blue' },
-          { label:'Onboardings',   val:d.activeOnbs,   sub:`${d.completedOnbs} completed`,     color:'blue' },
-          { label:'Standups Today',val:d.standupsToday,sub:'Team check-ins',                   color: d.standupsToday===0?'yellow':'green' },
-          { label:'TITAN Chats',   val:d.totalInteractions, sub:`${d.unknownMessages} unknown`, color:'' },
-          { label:'Clients Won',   val:d.metrics?.newClients||0, sub:'ClinicFlow clients',     color:'green' },
-          { label:'Tasks Done',    val:d.metrics?.tasksCompleted||0, sub:'All time',           color:'' },
-        ].map(s => (
-          <div className="stat-card" key={s.label}>
-            <div className="stat-label">{s.label}</div>
-            <div className={`stat-value ${s.color}`}>{s.val}</div>
-            <div className="stat-sub">{s.sub}</div>
+          { label:'Open Tasks',    val:d.openTasks,    sub:`${d.blockedTasks} blocked`, color:d.blockedTasks>0?'yellow':'', spark:spark.tasks, sparkColor:'var(--accent)' },
+          { label:'Open Bugs',     val:d.openBugs,     sub:`${d.criticalBugs} critical`, color:d.criticalBugs>0?'red':d.openBugs>5?'yellow':'', spark:spark.bugs, sparkColor:'var(--red)' },
+          { label:'Active Leads',  val:d.activeLeads,  sub:`${d.wonLeads} won total`, color:'accent', spark:spark.leads, sparkColor:'var(--accent)' },
+          { label:'Onboardings',   val:d.activeOnbs,   sub:`${d.completedOnbs} completed`, color:'purple', spark:null, sparkColor:'' },
+          { label:'Standups Today',val:d.standupsToday,sub:'Team check-ins', color:d.standupsToday===0?'yellow':'green', spark:null },
+          { label:'Clients Won',   val:d.metrics?.newClients||0, sub:'ClinicFlow total', color:'green', spark:spark.clients, sparkColor:'var(--green)' },
+          { label:'TITAN Chats',   val:d.totalInteractions, sub:`${d.unknownMessages} unknowns`, color:'', spark:null },
+          { label:'Tasks Completed',val:d.metrics?.tasksCompleted||0, sub:'All time', color:'', spark:null },
+        ].map((s,i) => (
+          <div key={s.label} className="bento-card col-3">
+            <div className="kpi-label">{s.label}</div>
+            <div className={`kpi-value ${s.color}`}>{s.val}</div>
+            <div className="kpi-sub">{s.sub}</div>
+            {s.spark && <Sparkline data={s.spark} color={s.sparkColor} />}
           </div>
         ))}
       </div>
 
-      {/* Quick actions */}
-      <div className="card">
-        <div className="card-header"><div className="card-title">Quick Actions</div></div>
-        <div style={{padding:'8px 16px'}}>
-          {[
-            { icon:'⌛', title:'Send Reflection', desc:'Post end-of-day check-in to #daily-standup', action: () => api.post('/api/slack/reflection').then(r => r?.success ? toast('Reflection sent','success') : toast(r?.error||'Failed','error')) },
-            { icon:'⚡', title:'Trigger Briefing', desc:'Post AI briefing to #daily-standup now', action: () => api.post('/api/slack/briefing').then(r => r?.success ? toast('Briefing triggered','success') : toast(r?.error||'Failed','error')) },
-          ].map(a => (
-            <div className="action-row" key={a.title} onClick={a.action} style={{cursor:'pointer'}}>
-              <div className="action-icon">{a.icon}</div>
-              <div className="action-info">
-                <div className="action-title">{a.title}</div>
-                <div className="action-desc">{a.desc}</div>
-              </div>
-              <div style={{color:'var(--ink4)', fontSize:18}}>›</div>
-            </div>
-          ))}
+      {/* Quick Actions row */}
+      <div className="bento" style={{marginBottom:0}}>
+        <div className="bento-card col-8">
+          <div className="kpi-label" style={{marginBottom:14}}>Quick Actions</div>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+            {[
+              { label:'⌛ Reflection',  fn:() => api.post('/api/slack/reflection').then(r => toast(r?.success?'Sent ✓':'Failed','success')) },
+              { label:'⚡ Briefing',    fn:() => api.post('/api/slack/briefing').then(r => toast(r?.success?'Triggered ✓':'Failed','success')) },
+            ].map(a => (
+              <button key={a.label} className="btn btn-ghost btn-sm" onClick={a.fn}>{a.label}</button>
+            ))}
+          </div>
+        </div>
+        <div className="bento-card col-4" style={{display:'flex',flexDirection:'column',justifyContent:'center'}}>
+          <div className="kpi-label">Bugs Reported</div>
+          <div className="kpi-value">{d.metrics?.bugsReported||0}</div>
+          <div className="kpi-sub">All time</div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ── REVENUE TRACKER ───────────────────────
+function Revenue() {
+  const [entries, setEntries] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('revenue_entries') || '[]'); } catch { return []; }
+  });
+  const [modal, setModal] = useState(false);
+  const [form, setForm] = useState({ clinic:'', plan:'Starter', amount:'' });
+
+  const PLANS = ['Starter — $49/mo', 'Growth — $99/mo', 'Pro — $199/mo', 'Enterprise — Custom'];
+
+  function save(e) {
+    if (!form.clinic || !form.amount) return toast('Fill all fields','error');
+    const updated = [...entries, { ...form, id: Date.now(), date: new Date().toLocaleDateString() }];
+    setEntries(updated);
+    localStorage.setItem('revenue_entries', JSON.stringify(updated));
+    toast('Revenue entry added','success');
+    setModal(false);
+    setForm({ clinic:'', plan:'Starter', amount:'' });
+  }
+
+  function remove(id) {
+    const updated = entries.filter(e => e.id !== id);
+    setEntries(updated);
+    localStorage.setItem('revenue_entries', JSON.stringify(updated));
+    toast('Entry removed','success');
+  }
+
+  const mrr = entries.reduce((a,e) => a + (parseFloat(e.amount) || 0), 0);
+  const arr = mrr * 12;
+
+  // MRR trend (mock cumulative)
+  const mrrTrend = entries.length > 0
+    ? entries.map((_, i) => entries.slice(0, i+1).reduce((a,e) => a + (parseFloat(e.amount)||0), 0))
+    : [0,0,0,0,0,mrr];
+
+  return (
+    <div>
+      <div className="section-header">
+        <h1 className="section-title">Revenue</h1>
+        <button className="btn btn-primary btn-sm" onClick={() => setModal(true)}>+ Add Client Revenue</button>
+      </div>
+
+      <div className="bento" style={{marginBottom:16}}>
+        <div className="bento-card col-4">
+          <div className="kpi-label">Monthly Recurring Revenue</div>
+          <div className="mrr-display">${mrr.toLocaleString()}</div>
+          <div className="kpi-sub" style={{marginTop:8}}>MRR from {entries.length} client{entries.length!==1?'s':''}</div>
+          <Sparkline data={mrrTrend} color="var(--green)" height={40} />
+        </div>
+        <div className="bento-card col-4">
+          <div className="kpi-label">Annual Recurring Revenue</div>
+          <div className="kpi-value green">${arr.toLocaleString()}</div>
+          <div className="kpi-sub">ARR projection</div>
+        </div>
+        <div className="bento-card col-4">
+          <div className="kpi-label">Avg Revenue / Client</div>
+          <div className="kpi-value accent">${entries.length > 0 ? Math.round(mrr/entries.length) : 0}</div>
+          <div className="kpi-sub">Per month</div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-header"><div className="card-title">Client Revenue ({entries.length})</div></div>
+        {entries.length === 0
+          ? <div className="empty"><div className="empty-icon">💰</div><div className="empty-text">No revenue entries yet. Add your first client.</div></div>
+          : <div className="table-wrap">
+              <table>
+                <thead><tr><th>Clinic</th><th>Plan</th><th>MRR</th><th>Added</th><th></th></tr></thead>
+                <tbody>
+                  {entries.map(e => (
+                    <tr key={e.id}>
+                      <td style={{fontWeight:600}}>{e.clinic}</td>
+                      <td><span className="badge badge-blue">{e.plan}</span></td>
+                      <td style={{fontWeight:700,color:'var(--green)'}}>${parseFloat(e.amount).toLocaleString()}</td>
+                      <td style={{fontSize:12,color:'var(--ink-4)'}}>{e.date}</td>
+                      <td><button className="icon-action" style={{color:'var(--red)'}} onClick={() => remove(e.id)}>✕</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+        }
+      </div>
+
+      {modal && (
+        <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&setModal(false)}>
+          <div className="modal">
+            <div className="modal-handle"/>
+            <div className="modal-title">Add Client Revenue</div>
+            <div className="form-group">
+              <label className="form-label">Clinic Name</label>
+              <input className="form-input" value={form.clinic} onChange={e=>setForm(p=>({...p,clinic:e.target.value}))} placeholder="e.g. Clínica Santa Rosa" autoFocus/>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Plan</label>
+              <select className="form-select" value={form.plan} onChange={e=>setForm(p=>({...p,plan:e.target.value}))}>
+                {PLANS.map(pl => <option key={pl}>{pl}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Monthly Amount (USD)</label>
+              <input className="form-input" type="number" value={form.amount} onChange={e=>setForm(p=>({...p,amount:e.target.value}))} placeholder="49" />
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={()=>setModal(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={save}>Add Revenue</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── ACTIVITY FEED ─────────────────────────
+function Activity() {
+  const [log, setLog] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      api.get('/api/interactions?limit=30'),
+      api.get('/api/tasks?status=done'),
+      api.get('/api/leads'),
+    ]).then(([interactions, tasks, leads]) => {
+      const feed = [];
+
+      interactions?.slice(0,15).forEach(i => feed.push({
+        type: 'titan', time: i.created_at,
+        text: `TITAN handled "${i.normalized_text?.substring(0,60)}" → ${i.intent_matched}`,
+        color: 'var(--accent)'
+      }));
+
+      tasks?.slice(0,5).forEach(t => feed.push({
+        type: 'task', time: t.created_at,
+        text: `Task "${t.title?.substring(0,50)}" marked ${t.status}`,
+        color: 'var(--green)'
+      }));
+
+      leads?.filter(l=>l.status==='won').slice(0,3).forEach(l => feed.push({
+        type: 'win', time: l.created_at,
+        text: `🎉 ${l.clinic_name} closed as a ClinicFlow client`,
+        color: 'var(--yellow)'
+      }));
+
+      feed.sort((a,b) => new Date(b.time) - new Date(a.time));
+      setLog(feed.slice(0,30));
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return <div className="loading"><div className="spinner"/>Loading feed…</div>;
+
+  return (
+    <div>
+      <div className="section-header"><h1 className="section-title">Activity</h1></div>
+      <div className="card">
+        <div className="card-header"><div className="card-title">Live Feed</div><div className="card-meta">{log.length} events</div></div>
+        <div className="card-body" style={{padding:'4px 20px'}}>
+          {log.length === 0
+            ? <div className="empty"><div className="empty-icon">⚡</div><div className="empty-text">No activity yet</div></div>
+            : log.map((item,i) => (
+                <div key={i} className="feed-item">
+                  <div className="feed-dot" style={{background: item.color}} />
+                  <div className="feed-content">
+                    <div className="feed-text">{item.text}</div>
+                    <div className="feed-time">{item.time ? new Date(item.time).toLocaleString('en-US', {timeZone:'America/El_Salvador'}) : ''}</div>
+                  </div>
+                </div>
+              ))
+          }
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── DEPLOY PANEL ─────────────────────────
+function Deploy() {
+  const [form, setForm] = useState({ version:'', notes:'', channel:'deployments', env:'production' });
+  const [history, setHistory] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('deploy_history')||'[]'); } catch { return []; }
+  });
+
+  const CHS = [
+    {key:'deployments',label:'#deployments'},{key:'general',label:'#general'},
+    {key:'dev',label:'#engineering'},{key:'ops_alerts',label:'#ops-alerts'},
+  ];
+
+  async function deploy() {
+    if (!form.version) return toast('Version required','error');
+    const msg = `🚀 *Deploy — v${form.version}* (${form.env})\n\n${form.notes||'No notes.'}\n\n_Deployed via TITAN Dashboard · ${new Date().toLocaleTimeString('en-US',{timeZone:'America/El_Salvador'})}_`;
+    const r = await api.post('/api/slack/announce', { channel: form.channel, message: msg });
+    if (r?.success) {
+      const entry = { ...form, ts: new Date().toLocaleString(), id: Date.now() };
+      const updated = [entry, ...history].slice(0, 20);
+      setHistory(updated);
+      localStorage.setItem('deploy_history', JSON.stringify(updated));
+      toast(`v${form.version} deployed to ${form.env} ✓`, 'success');
+      setForm(p => ({...p, version:'', notes:''}));
+    } else {
+      toast(r?.error || 'Deploy failed', 'error');
+    }
+  }
+
+  return (
+    <div>
+      <div className="section-header"><h1 className="section-title">Deploy</h1></div>
+
+      <div className="deploy-card">
+        <div style={{fontSize:13,fontWeight:600,color:'var(--accent)',marginBottom:16,textTransform:'uppercase',letterSpacing:'0.5px'}}>New Deployment</div>
+        <div className="grid-2" style={{gap:12,marginBottom:12}}>
+          <div className="form-group" style={{marginBottom:0}}>
+            <label className="form-label">Version</label>
+            <input className="form-input" value={form.version} onChange={e=>setForm(p=>({...p,version:e.target.value}))} placeholder="1.2.3" />
+          </div>
+          <div className="form-group" style={{marginBottom:0}}>
+            <label className="form-label">Environment</label>
+            <select className="form-select" value={form.env} onChange={e=>setForm(p=>({...p,env:e.target.value}))}>
+              {['production','staging','hotfix'].map(v=><option key={v}>{v}</option>)}
+            </select>
+          </div>
+        </div>
+        <div className="form-group">
+          <label className="form-label">Release Notes</label>
+          <textarea className="form-textarea" value={form.notes} onChange={e=>setForm(p=>({...p,notes:e.target.value}))} placeholder="What changed in this release?" style={{minHeight:70}} />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Notify Channel</label>
+          <div className="channel-pills">
+            {CHS.map(c => <div key={c.key} className={`channel-pill ${form.channel===c.key?'active':''}`} onClick={()=>setForm(p=>({...p,channel:c.key}))}>{c.label}</div>)}
+          </div>
+        </div>
+        <button className="btn btn-primary" onClick={deploy} style={{marginTop:4}}>🚀 Deploy & Announce</button>
+      </div>
+
+      {history.length > 0 && (
+        <div className="card">
+          <div className="card-header"><div className="card-title">Deploy History</div></div>
+          <div className="table-wrap">
+            <table>
+              <thead><tr><th>Version</th><th>Env</th><th>Channel</th><th>Notes</th><th>When</th></tr></thead>
+              <tbody>
+                {history.map(h => (
+                  <tr key={h.id}>
+                    <td><span style={{fontFamily:'var(--mono)',fontWeight:700,color:'var(--accent)'}}>v{h.version}</span></td>
+                    <td><span className={`badge ${h.env==='production'?'badge-green':h.env==='hotfix'?'badge-red':'badge-yellow'}`}>{h.env}</span></td>
+                    <td style={{fontSize:12,color:'var(--ink-4)'}}>#{h.channel}</td>
+                    <td style={{fontSize:12,color:'var(--ink-3)',maxWidth:200}}>{h.notes?.substring(0,60)||'—'}</td>
+                    <td style={{fontSize:12,color:'var(--ink-4)',fontFamily:'var(--mono)'}}>{h.ts}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1244,6 +1910,7 @@ function Tasks() {
   const [filter, setFilter] = useState('open');
   const [modal, setModal] = useState(false);
   const [form, setForm] = useState({ title:'', assignee:'', priority:'🟡 Medium', area:'dev', dueDate:'' });
+
   const load = () => api.get(`/api/tasks${filter!=='all'?`?status=${filter}`:''}`).then(setTasks);
   useEffect(() => { load(); }, [filter]);
 
@@ -1254,52 +1921,40 @@ function Tasks() {
     else toast(r?.error||'Failed','error');
   }
 
-  async function update(id, status) {
-    await api.patch(`/api/tasks/${id}`, { status });
-    toast(status === 'done' ? 'Task completed ✓' : `Marked ${status}`,'success');
-    load();
-  }
-
-  const priColor = p => p?.includes('Critical')?'badge-red':p?.includes('High')?'badge-yellow':p?.includes('Medium')?'badge-blue':'badge-gray';
-  const stColor  = s => s==='done'?'badge-green':s==='blocked'?'badge-red':s==='in_progress'?'badge-yellow':'badge-blue';
+  const pc = p => p?.includes('Critical')?'badge-red':p?.includes('High')?'badge-yellow':p?.includes('Medium')?'badge-blue':'badge-gray';
+  const sc = s => s==='done'?'badge-green':s==='blocked'?'badge-red':s==='in_progress'?'badge-yellow':'badge-blue';
 
   return (
     <div>
       <div className="section-header">
         <h1 className="section-title">Tasks</h1>
-        <button className="btn btn-primary btn-sm" onClick={() => setModal(true)}>+ New</button>
+        <button className="btn btn-primary btn-sm" onClick={()=>setModal(true)}>+ New Task</button>
       </div>
-
-      <div className="tabs" style={{marginBottom:16}}>
-        {['open','in_progress','blocked','done','all'].map(s => (
-          <div key={s} className={`tab ${filter===s?'active':''}`} onClick={() => setFilter(s)}>
-            {s.replace('_',' ')}
-          </div>
+      <div className="tabs">
+        {['open','in_progress','blocked','done','all'].map(s=>(
+          <div key={s} className={`tab ${filter===s?'active':''}`} onClick={()=>setFilter(s)}>{s.replace('_',' ')}</div>
         ))}
       </div>
-
       <div className="card">
-        {tasks.length === 0
-          ? <div className="empty"><div className="empty-icon">✅</div><div className="empty-text">No tasks found</div></div>
+        {tasks.length===0
+          ? <div className="empty"><div className="empty-icon">✅</div><div className="empty-text">No tasks</div></div>
           : <div className="table-wrap">
               <table>
-                <thead>
-                  <tr><th>ID</th><th>Title</th><th>Priority</th><th>Area</th><th>Status</th><th>Due</th><th></th></tr>
-                </thead>
+                <thead><tr><th>ID</th><th>Title</th><th>Priority</th><th>Area</th><th>Status</th><th>Due</th><th></th></tr></thead>
                 <tbody>
-                  {tasks.map(t => (
+                  {tasks.map(t=>(
                     <tr key={t.id}>
-                      <td><span style={{fontFamily:'var(--mono)', fontSize:11, color:'var(--blue)', fontWeight:600}}>{t.id}</span></td>
-                      <td style={{maxWidth:200, fontWeight:500}}>{t.title}</td>
-                      <td><span className={`badge ${priColor(t.priority)}`}>{t.priority?.replace(/[🔴🟠🟡🟢]/g,'').trim()}</span></td>
+                      <td><span style={{fontFamily:'var(--mono)',fontSize:11,color:'var(--accent)',fontWeight:700}}>{t.id}</span></td>
+                      <td style={{maxWidth:200,fontWeight:500}}>{t.title}</td>
+                      <td><span className={`badge ${pc(t.priority)}`}>{t.priority?.replace(/[🔴🟠🟡🟢]/g,'').trim()}</span></td>
                       <td><span className="badge badge-gray">{t.area}</span></td>
-                      <td><span className={`badge ${stColor(t.status)}`}>{t.status}</span></td>
-                      <td style={{fontSize:12, color:'var(--ink4)'}}>{t.due_date}</td>
+                      <td><span className={`badge ${sc(t.status)}`}>{t.status}</span></td>
+                      <td style={{fontSize:12,color:'var(--ink-4)'}}>{t.due_date}</td>
                       <td>
-                        <div style={{display:'flex', gap:4}}>
-                          {t.status!=='done'        && <button className="btn-icon" title="Done"        onClick={() => update(t.id,'done')}>✓</button>}
-                          {t.status==='open'         && <button className="btn-icon" title="In Progress" onClick={() => update(t.id,'in_progress')}>▶</button>}
-                          {t.status!=='blocked'&&t.status!=='done' && <button className="btn-icon" title="Block" style={{color:'var(--red)'}} onClick={() => update(t.id,'blocked')}>⊘</button>}
+                        <div style={{display:'flex',gap:4}}>
+                          {t.status!=='done'&&<button className="icon-action" title="Done" onClick={()=>api.patch(`/api/tasks/${t.id}`,{status:'done'}).then(()=>{toast('Done ✓','success');load();})}>✓</button>}
+                          {t.status==='open'&&<button className="icon-action" title="Start" onClick={()=>api.patch(`/api/tasks/${t.id}`,{status:'in_progress'}).then(load)}>▶</button>}
+                          {t.status!=='blocked'&&t.status!=='done'&&<button className="icon-action" title="Block" style={{color:'var(--red)'}} onClick={()=>api.patch(`/api/tasks/${t.id}`,{status:'blocked'}).then(load)}>⊘</button>}
                         </div>
                       </td>
                     </tr>
@@ -1309,41 +1964,31 @@ function Tasks() {
             </div>
         }
       </div>
-
-      {modal && (
-        <div className="modal-overlay" onClick={e => e.target===e.currentTarget && setModal(false)}>
+      {modal&&(
+        <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&setModal(false)}>
           <div className="modal">
             <div className="modal-handle"/>
             <div className="modal-title">New Task</div>
-            <div className="form-group">
-              <label className="form-label">Title</label>
-              <input className="form-input" value={form.title} onChange={e => setForm(p=>({...p,title:e.target.value}))} placeholder="e.g. Fix login flow" autoFocus />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Assignee (Slack ID)</label>
-              <input className="form-input" value={form.assignee} onChange={e => setForm(p=>({...p,assignee:e.target.value}))} placeholder="U0B728YJV7D" />
-            </div>
+            <div className="form-group"><label className="form-label">Title</label><input className="form-input" value={form.title} onChange={e=>setForm(p=>({...p,title:e.target.value}))} placeholder="e.g. Fix login flow" autoFocus/></div>
+            <div className="form-group"><label className="form-label">Assignee (Slack ID)</label><input className="form-input" value={form.assignee} onChange={e=>setForm(p=>({...p,assignee:e.target.value}))} placeholder="U0B728YJV7D"/></div>
             <div className="grid-2">
               <div className="form-group">
                 <label className="form-label">Priority</label>
-                <select className="form-select" value={form.priority} onChange={e => setForm(p=>({...p,priority:e.target.value}))}>
-                  {['🔴 Critical','🟠 High','🟡 Medium','🟢 Low'].map(v => <option key={v}>{v}</option>)}
+                <select className="form-select" value={form.priority} onChange={e=>setForm(p=>({...p,priority:e.target.value}))}>
+                  {['🔴 Critical','🟠 High','🟡 Medium','🟢 Low'].map(v=><option key={v}>{v}</option>)}
                 </select>
               </div>
               <div className="form-group">
                 <label className="form-label">Area</label>
-                <select className="form-select" value={form.area} onChange={e => setForm(p=>({...p,area:e.target.value}))}>
-                  {['dev','onboarding','sales','support','ops'].map(v => <option key={v}>{v}</option>)}
+                <select className="form-select" value={form.area} onChange={e=>setForm(p=>({...p,area:e.target.value}))}>
+                  {['dev','onboarding','sales','support','ops'].map(v=><option key={v}>{v}</option>)}
                 </select>
               </div>
             </div>
-            <div className="form-group">
-              <label className="form-label">Due Date</label>
-              <input className="form-input" type="date" value={form.dueDate} onChange={e => setForm(p=>({...p,dueDate:e.target.value}))} />
-            </div>
+            <div className="form-group"><label className="form-label">Due Date</label><input className="form-input" type="date" value={form.dueDate} onChange={e=>setForm(p=>({...p,dueDate:e.target.value}))}/></div>
             <div className="modal-actions">
-              <button className="btn btn-ghost" onClick={() => setModal(false)}>Cancel</button>
-              <button className="btn btn-primary" onClick={create}>Create Task</button>
+              <button className="btn btn-ghost" onClick={()=>setModal(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={create}>Create</button>
             </div>
           </div>
         </div>
@@ -1357,6 +2002,7 @@ function Leads() {
   const [leads, setLeads] = useState([]);
   const [modal, setModal] = useState(false);
   const [form, setForm] = useState({ clinicName:'', contact:'', stage:'📞 First Contact', notes:'' });
+
   const load = () => api.get('/api/leads').then(setLeads);
   useEffect(() => { load(); }, []);
 
@@ -1371,54 +2017,50 @@ function Leads() {
   }
 
   async function move(id, stage) {
-    const status = STAGE_STATUS[stage] || stage.toLowerCase().replace(/[^a-z]/g,'');
-    const r = await api.patch(`/api/leads/${id}`, { status, stage });
-    if (r?.success) { toast(stage.includes('Won') ? '🎉 Closed won!' : 'Lead updated','success'); load(); }
-    else toast(r?.error||'Failed','error');
+    const status = STAGE_STATUS[stage] || 'active';
+    await api.patch(`/api/leads/${id}`, { status, stage });
+    toast(stage.includes('Won')?'🎉 Closed won!':'Lead updated','success');
+    load();
   }
 
-  const stColor = s => s==='won'?'badge-green':s==='lost'?'badge-red':['negotiating','proposal'].includes(s)?'badge-yellow':'badge-blue';
-  const active = leads.filter(l => !['won','lost'].includes(l.status));
-  const won    = leads.filter(l => l.status === 'won');
+  const sc = s => s==='won'?'badge-green':s==='lost'?'badge-red':['negotiating','proposal'].includes(s)?'badge-yellow':'badge-blue';
 
   return (
     <div>
       <div className="section-header">
         <h1 className="section-title">Pipeline</h1>
-        <button className="btn btn-primary btn-sm" onClick={() => setModal(true)}>+ New Lead</button>
+        <button className="btn btn-primary btn-sm" onClick={()=>setModal(true)}>+ New Lead</button>
       </div>
-
-      <div className="grid-3" style={{marginBottom:16}}>
+      <div className="bento" style={{marginBottom:16}}>
         {[
-          { label:'Active',       val:active.length, color:'' },
-          { label:'Closed Won',   val:won.length,    color:'green' },
-          { label:'Closed Lost',  val:leads.filter(l=>l.status==='lost').length, color:'red' },
-        ].map(s => (
-          <div className="stat-card" key={s.label}>
-            <div className="stat-label">{s.label}</div>
-            <div className={`stat-value ${s.color}`}>{s.val}</div>
+          {label:'Active', val:leads.filter(l=>!['won','lost'].includes(l.status)).length, color:'accent'},
+          {label:'Won',    val:leads.filter(l=>l.status==='won').length,  color:'green'},
+          {label:'Lost',   val:leads.filter(l=>l.status==='lost').length, color:'red'},
+        ].map(s=>(
+          <div key={s.label} className="bento-card col-4">
+            <div className="kpi-label">{s.label}</div>
+            <div className={`kpi-value ${s.color}`}>{s.val}</div>
           </div>
         ))}
       </div>
-
       <div className="card">
-        {leads.length === 0
+        {leads.length===0
           ? <div className="empty"><div className="empty-icon">💰</div><div className="empty-text">No leads yet</div></div>
           : <div className="table-wrap">
               <table>
                 <thead><tr><th>ID</th><th>Clinic</th><th>Contact</th><th>Stage</th><th>Status</th><th></th></tr></thead>
                 <tbody>
-                  {leads.map(l => (
+                  {leads.map(l=>(
                     <tr key={l.id}>
-                      <td><span style={{fontFamily:'var(--mono)', fontSize:11, color:'var(--blue)', fontWeight:600}}>{l.id}</span></td>
+                      <td><span style={{fontFamily:'var(--mono)',fontSize:11,color:'var(--accent)',fontWeight:700}}>{l.id}</span></td>
                       <td style={{fontWeight:600}}>{l.clinic_name}</td>
-                      <td style={{fontSize:12, color:'var(--ink4)'}}>{l.contact}</td>
+                      <td style={{fontSize:12,color:'var(--ink-4)'}}>{l.contact}</td>
                       <td style={{fontSize:13}}>{l.stage}</td>
-                      <td><span className={`badge ${stColor(l.status)}`}>{l.status}</span></td>
+                      <td><span className={`badge ${sc(l.status)}`}>{l.status}</span></td>
                       <td>
-                        <div style={{display:'flex', gap:4}}>
-                          {l.status!=='won'  && <button className="btn btn-success btn-sm" onClick={() => move(l.id,'🎉 Closed Won')}>Won</button>}
-                          {!['won','lost'].includes(l.status) && <button className="btn btn-danger btn-sm" onClick={() => move(l.id,'❌ Closed Lost')}>Lost</button>}
+                        <div style={{display:'flex',gap:4}}>
+                          {l.status!=='won'&&<button className="btn btn-success btn-xs" onClick={()=>move(l.id,'🎉 Closed Won')}>Won</button>}
+                          {!['won','lost'].includes(l.status)&&<button className="btn btn-xs" style={{background:'var(--red-soft)',color:'var(--red)',border:'1px solid rgba(255,59,48,0.2)'}} onClick={()=>move(l.id,'❌ Closed Lost')}>Lost</button>}
                         </div>
                       </td>
                     </tr>
@@ -1428,30 +2070,18 @@ function Leads() {
             </div>
         }
       </div>
-
-      {modal && (
-        <div className="modal-overlay" onClick={e => e.target===e.currentTarget && setModal(false)}>
+      {modal&&(
+        <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&setModal(false)}>
           <div className="modal">
             <div className="modal-handle"/>
             <div className="modal-title">Add Lead</div>
-            {[{f:'clinicName',l:'Clinic Name',p:'e.g. Clínica Santa Rosa'},{f:'contact',l:'Contact',p:'Name + WhatsApp'}].map(({f,l,p}) => (
-              <div className="form-group" key={f}>
-                <label className="form-label">{l}</label>
-                <input className="form-input" value={form[f]} onChange={e => setForm(prev=>({...prev,[f]:e.target.value}))} placeholder={p} />
-              </div>
+            {[{f:'clinicName',l:'Clinic Name',p:'e.g. Clínica Santa Rosa'},{f:'contact',l:'Contact',p:'Name + WhatsApp'}].map(({f,l,p})=>(
+              <div className="form-group" key={f}><label className="form-label">{l}</label><input className="form-input" value={form[f]} onChange={e=>setForm(prev=>({...prev,[f]:e.target.value}))} placeholder={p}/></div>
             ))}
-            <div className="form-group">
-              <label className="form-label">Stage</label>
-              <select className="form-select" value={form.stage} onChange={e => setForm(p=>({...p,stage:e.target.value}))}>
-                {STAGES.map(s => <option key={s}>{s}</option>)}
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Notes</label>
-              <textarea className="form-textarea" value={form.notes} onChange={e => setForm(p=>({...p,notes:e.target.value}))} placeholder="Pain points, budget, source…" />
-            </div>
+            <div className="form-group"><label className="form-label">Stage</label><select className="form-select" value={form.stage} onChange={e=>setForm(p=>({...p,stage:e.target.value}))}>{STAGES.map(s=><option key={s}>{s}</option>)}</select></div>
+            <div className="form-group"><label className="form-label">Notes</label><textarea className="form-textarea" value={form.notes} onChange={e=>setForm(p=>({...p,notes:e.target.value}))} placeholder="Pain points, budget…"/></div>
             <div className="modal-actions">
-              <button className="btn btn-ghost" onClick={() => setModal(false)}>Cancel</button>
+              <button className="btn btn-ghost" onClick={()=>setModal(false)}>Cancel</button>
               <button className="btn btn-primary" onClick={create}>Add Lead</button>
             </div>
           </div>
@@ -1467,14 +2097,15 @@ function Bugs() {
   const [filter, setFilter] = useState('open');
   const [modal, setModal] = useState(false);
   const [form, setForm] = useState({ title:'', severity:'🟡 Medium — Feature partially broken', sevVal:'medium', steps:'', assignee:'' });
+
   const load = () => api.get('/api/bugs').then(d => setBugs(filter==='all'?d:d.filter(b=>b.status===filter)));
   useEffect(() => { api.get('/api/bugs').then(d => setBugs(filter==='all'?d:d.filter(b=>b.status===filter))); }, [filter]);
 
   const SEVS = [
-    { label:'🔴 Critical — App down / data loss', val:'critical' },
-    { label:'🟠 High — Major feature broken',     val:'high' },
-    { label:'🟡 Medium — Feature partially broken',val:'medium' },
-    { label:'🟢 Low — Minor / cosmetic',           val:'low' },
+    {label:'🔴 Critical — App down / data loss',val:'critical'},
+    {label:'🟠 High — Major feature broken',val:'high'},
+    {label:'🟡 Medium — Feature partially broken',val:'medium'},
+    {label:'🟢 Low — Minor / cosmetic',val:'low'},
   ];
 
   async function create() {
@@ -1484,39 +2115,37 @@ function Bugs() {
     else toast(r?.error||'Failed','error');
   }
 
-  const sevColor = v => v==='critical'?'badge-red':v==='high'?'badge-yellow':v==='medium'?'badge-blue':'badge-gray';
-  const stColor  = s => s==='resolved'?'badge-green':s==='in_progress'?'badge-yellow':'badge-red';
+  const sc = v=>v==='critical'?'badge-red':v==='high'?'badge-yellow':v==='medium'?'badge-blue':'badge-gray';
+  const ss = s=>s==='resolved'?'badge-green':s==='in_progress'?'badge-yellow':'badge-red';
 
   return (
     <div>
       <div className="section-header">
         <h1 className="section-title">Bugs</h1>
-        <button className="btn btn-primary btn-sm" onClick={() => setModal(true)}>+ Report</button>
+        <button className="btn btn-primary btn-sm" onClick={()=>setModal(true)}>+ Report</button>
       </div>
-
       <div className="tabs">
-        {['open','in_progress','resolved','all'].map(s => (
-          <div key={s} className={`tab ${filter===s?'active':''}`} onClick={() => setFilter(s)}>{s.replace('_',' ')}</div>
+        {['open','in_progress','resolved','all'].map(s=>(
+          <div key={s} className={`tab ${filter===s?'active':''}`} onClick={()=>setFilter(s)}>{s.replace('_',' ')}</div>
         ))}
       </div>
-
       <div className="card">
-        {bugs.length === 0
-          ? <div className="empty"><div className="empty-icon">🟢</div><div className="empty-text">No bugs. ClinicFlow is clean.</div></div>
+        {bugs.length===0
+          ? <div className="empty"><div className="empty-icon">🟢</div><div className="empty-text">No bugs — ClinicFlow is clean.</div></div>
           : <div className="table-wrap">
               <table>
                 <thead><tr><th>ID</th><th>Title</th><th>Severity</th><th>Status</th><th></th></tr></thead>
                 <tbody>
-                  {bugs.map(b => (
+                  {bugs.map(b=>(
                     <tr key={b.id}>
-                      <td><span style={{fontFamily:'var(--mono)', fontSize:11, color:'var(--red)', fontWeight:600}}>{b.id}</span></td>
-                      <td style={{maxWidth:220, fontWeight:500}}>{b.title}</td>
-                      <td><span className={`badge ${sevColor(b.sev_val)}`}>{b.sev_val}</span></td>
-                      <td><span className={`badge ${stColor(b.status)}`}>{b.status}</span></td>
+                      <td><span style={{fontFamily:'var(--mono)',fontSize:11,color:'var(--red)',fontWeight:700}}>{b.id}</span></td>
+                      <td style={{maxWidth:220,fontWeight:500}}>{b.title}</td>
+                      <td><span className={`badge ${sc(b.sev_val)}`}>{b.sev_val}</span></td>
+                      <td><span className={`badge ${ss(b.status)}`}>{b.status}</span></td>
                       <td>
-                        <div style={{display:'flex', gap:4}}>
-                          {b.status==='open' && <button className="btn-icon" title="Start" onClick={() => api.patch(`/api/bugs/${b.id}`,{status:'in_progress'}).then(load)}>▶</button>}
-                          {b.status!=='resolved' && <button className="btn-icon" title="Resolve" style={{color:'var(--green)'}} onClick={() => api.patch(`/api/bugs/${b.id}`,{status:'resolved'}).then(load)}>✓</button>}
+                        <div style={{display:'flex',gap:4}}>
+                          {b.status==='open'&&<button className="icon-action" onClick={()=>api.patch(`/api/bugs/${b.id}`,{status:'in_progress'}).then(load)}>▶</button>}
+                          {b.status!=='resolved'&&<button className="icon-action" style={{color:'var(--green)'}} onClick={()=>api.patch(`/api/bugs/${b.id}`,{status:'resolved'}).then(()=>{toast('Resolved ✓','success');load();})}>✓</button>}
                         </div>
                       </td>
                     </tr>
@@ -1526,36 +2155,18 @@ function Bugs() {
             </div>
         }
       </div>
-
-      {modal && (
-        <div className="modal-overlay" onClick={e => e.target===e.currentTarget && setModal(false)}>
+      {modal&&(
+        <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&setModal(false)}>
           <div className="modal">
             <div className="modal-handle"/>
             <div className="modal-title">Report Bug</div>
-            <div className="form-group">
-              <label className="form-label">Title</label>
-              <input className="form-input" value={form.title} onChange={e => setForm(p=>({...p,title:e.target.value}))} placeholder="e.g. Calendar crashes on iOS" autoFocus />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Severity</label>
-              <select className="form-select" value={form.severity} onChange={e => {
-                const o = SEVS.find(x => x.label===e.target.value);
-                setForm(p=>({...p, severity:e.target.value, sevVal:o?.val||'medium'}));
-              }}>
-                {SEVS.map(o => <option key={o.val}>{o.label}</option>)}
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Assign To (Slack ID)</label>
-              <input className="form-input" value={form.assignee} onChange={e => setForm(p=>({...p,assignee:e.target.value}))} placeholder="U0B728YJV7D" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Steps to Reproduce</label>
-              <textarea className="form-textarea" value={form.steps} onChange={e => setForm(p=>({...p,steps:e.target.value}))} placeholder="1. Go to…&#10;2. Click…&#10;3. See error" />
-            </div>
+            <div className="form-group"><label className="form-label">Title</label><input className="form-input" value={form.title} onChange={e=>setForm(p=>({...p,title:e.target.value}))} placeholder="e.g. Calendar crashes on iOS" autoFocus/></div>
+            <div className="form-group"><label className="form-label">Severity</label><select className="form-select" value={form.severity} onChange={e=>{const o=SEVS.find(x=>x.label===e.target.value);setForm(p=>({...p,severity:e.target.value,sevVal:o?.val||'medium'}))}}>{SEVS.map(o=><option key={o.val}>{o.label}</option>)}</select></div>
+            <div className="form-group"><label className="form-label">Assign To</label><input className="form-input" value={form.assignee} onChange={e=>setForm(p=>({...p,assignee:e.target.value}))} placeholder="U0B728YJV7D"/></div>
+            <div className="form-group"><label className="form-label">Steps to Reproduce</label><textarea className="form-textarea" value={form.steps} onChange={e=>setForm(p=>({...p,steps:e.target.value}))} placeholder={"1. Go to…\n2. Click…\n3. See error"}/></div>
             <div className="modal-actions">
-              <button className="btn btn-ghost" onClick={() => setModal(false)}>Cancel</button>
-              <button className="btn btn-danger" style={{background:'var(--red)', color:'white', border:'none'}} onClick={create}>Report Bug</button>
+              <button className="btn btn-ghost" onClick={()=>setModal(false)}>Cancel</button>
+              <button className="btn btn-danger" onClick={create}>Report Bug</button>
             </div>
           </div>
         </div>
@@ -1569,18 +2180,19 @@ function Onboardings() {
   const [onbs, setOnbs] = useState([]);
   const [modal, setModal] = useState(false);
   const [form, setForm] = useState({ clinicName:'', owner:'', contact:'' });
+
   const load = () => api.get('/api/onboardings').then(setOnbs);
   useEffect(() => { load(); }, []);
 
   async function create() {
     if (!form.clinicName) return toast('Clinic name required','error');
     const r = await api.post('/api/onboardings', form);
-    if (r?.id) { toast(`Onboarding started`,'success'); setModal(false); load(); }
+    if (r?.id) { toast('Onboarding started','success'); setModal(false); load(); }
     else toast(r?.error||'Failed','error');
   }
 
   async function step(id, idx) {
-    const r = await api.patch(`/api/onboardings/${id}/step`, { stepIndex: idx });
+    const r = await api.patch(`/api/onboardings/${id}/step`, { stepIndex:idx });
     if (r?.allDone) toast('🎉 Onboarding complete!','success');
     else toast('Step completed','success');
     load();
@@ -1590,37 +2202,36 @@ function Onboardings() {
     <div>
       <div className="section-header">
         <h1 className="section-title">Onboarding</h1>
-        <button className="btn btn-primary btn-sm" onClick={() => setModal(true)}>+ Start</button>
+        <button className="btn btn-primary btn-sm" onClick={()=>setModal(true)}>+ Start</button>
       </div>
-
-      {onbs.length === 0
+      {onbs.length===0
         ? <div className="card"><div className="empty"><div className="empty-icon">🏥</div><div className="empty-text">No onboardings yet</div></div></div>
-        : onbs.map(o => {
-            const done  = o.steps?.filter(s=>s.done).length || 0;
-            const total = o.steps?.length || 6;
-            const pct   = Math.round((done/total)*100);
+        : onbs.map(o=>{
+            const done=o.steps?.filter(s=>s.done).length||0;
+            const total=o.steps?.length||6;
+            const pct=Math.round((done/total)*100);
             return (
               <div className="card" key={o.id} style={{marginBottom:12}}>
                 <div className="card-header">
                   <div>
-                    <div style={{display:'flex', alignItems:'center', gap:8, marginBottom:2}}>
-                      <span style={{fontFamily:'var(--mono)', fontSize:11, color:'var(--blue)', fontWeight:600}}>{o.id}</span>
-                      <span style={{fontWeight:700, fontSize:15}}>{o.clinic_name}</span>
+                    <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:3}}>
+                      <span style={{fontFamily:'var(--mono)',fontSize:11,color:'var(--accent)',fontWeight:700}}>{o.id}</span>
+                      <span style={{fontWeight:700,fontSize:15}}>{o.clinic_name}</span>
                       <span className={`badge ${o.status==='complete'?'badge-green':'badge-blue'}`}>{o.status}</span>
                     </div>
-                    <div style={{fontSize:12, color:'var(--ink4)'}}>Contact: {o.contact}</div>
+                    <div style={{fontSize:12,color:'var(--ink-4)'}}>Contact: {o.contact}</div>
                   </div>
                   <div style={{textAlign:'right'}}>
-                    <div style={{fontSize:22, fontWeight:800, color: pct===100?'var(--green)':'var(--blue)', letterSpacing:'-1px'}}>{pct}%</div>
-                    <div style={{fontSize:11, color:'var(--ink4)'}}>{done}/{total} steps</div>
+                    <div style={{fontSize:24,fontWeight:900,color:pct===100?'var(--green)':'var(--accent)',letterSpacing:'-1px'}}>{pct}%</div>
+                    <div style={{fontSize:11,color:'var(--ink-4)'}}>{done}/{total}</div>
                   </div>
                 </div>
                 <div style={{padding:'0 20px 4px'}}>
-                  <div className="progress-track" style={{marginBottom:16}}>
-                    <div className={`progress-fill ${pct===100?'done':''}`} style={{width:`${pct}%`}} />
+                  <div className="progress-track" style={{marginBottom:14}}>
+                    <div className={`progress-fill ${pct===100?'green':''}`} style={{width:`${pct}%`}}/>
                   </div>
-                  {o.steps?.map((s, i) => (
-                    <div key={i} className="check-row" onClick={() => !s.done && o.status!=='complete' && step(o.id, i)}>
+                  {o.steps?.map((s,i)=>(
+                    <div key={i} className="check-row" onClick={()=>!s.done&&o.status!=='complete'&&step(o.id,i)}>
                       <div className={`check-box ${s.done?'done':''}`}>{s.done?'✓':''}</div>
                       <span className={`check-text ${s.done?'done':''}`}>{s.title}</span>
                     </div>
@@ -1630,21 +2241,17 @@ function Onboardings() {
             );
           })
       }
-
-      {modal && (
-        <div className="modal-overlay" onClick={e => e.target===e.currentTarget && setModal(false)}>
+      {modal&&(
+        <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&setModal(false)}>
           <div className="modal">
             <div className="modal-handle"/>
             <div className="modal-title">Start Onboarding</div>
-            {[{f:'clinicName',l:'Clinic Name',p:'e.g. Clínica Santa Rosa'},{f:'owner',l:'Owner (Slack ID)',p:'U0B728YJV7D'},{f:'contact',l:'Contact',p:'Name + WhatsApp'}].map(({f,l,p}) => (
-              <div className="form-group" key={f}>
-                <label className="form-label">{l}</label>
-                <input className="form-input" value={form[f]} onChange={e => setForm(prev=>({...prev,[f]:e.target.value}))} placeholder={p} />
-              </div>
+            {[{f:'clinicName',l:'Clinic Name',p:'e.g. Clínica Santa Rosa'},{f:'owner',l:'Owner (Slack ID)',p:'U0B728YJV7D'},{f:'contact',l:'Contact',p:'Name + WhatsApp'}].map(({f,l,p})=>(
+              <div className="form-group" key={f}><label className="form-label">{l}</label><input className="form-input" value={form[f]} onChange={e=>setForm(prev=>({...prev,[f]:e.target.value}))} placeholder={p}/></div>
             ))}
             <div className="modal-actions">
-              <button className="btn btn-ghost" onClick={() => setModal(false)}>Cancel</button>
-              <button className="btn btn-primary" onClick={create}>Start Onboarding</button>
+              <button className="btn btn-ghost" onClick={()=>setModal(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={create}>Start</button>
             </div>
           </div>
         </div>
@@ -1663,36 +2270,26 @@ function Standups() {
     <div>
       <div className="section-header">
         <h1 className="section-title">Standups</h1>
-        <input className="form-input" type="date" value={date} onChange={e => setDate(e.target.value)} style={{width:'auto', maxWidth:160, fontSize:13, padding:'6px 10px'}} />
+        <input className="form-input" type="date" value={date} onChange={e=>setDate(e.target.value)} style={{width:'auto',maxWidth:160,fontSize:13,padding:'6px 10px'}}/>
       </div>
-
-      {list.length === 0
+      {list.length===0
         ? <div className="card"><div className="empty"><div className="empty-icon">📋</div><div className="empty-text">No standups for {date}</div></div></div>
-        : list.map(s => (
+        : list.map(s=>(
             <div className="card" key={s.user_id} style={{marginBottom:10}}>
               <div className="card-header">
-                <div style={{display:'flex', alignItems:'center', gap:10}}>
-                  <div className="avatar" style={{width:36, height:36, borderRadius:10, fontSize:14}}>{s.user_id?.slice(-2).toUpperCase()}</div>
+                <div style={{display:'flex',alignItems:'center',gap:10}}>
+                  <div className="avatar" style={{width:34,height:34,borderRadius:10,fontSize:13}}>{s.user_id?.slice(-2).toUpperCase()}</div>
                   <div>
-                    <div style={{fontFamily:'var(--mono)', fontSize:12, color:'var(--blue)', fontWeight:600}}>{s.user_id}</div>
-                    <div style={{fontSize:11, color:'var(--ink4)'}}>{s.area} · {s.date}</div>
+                    <div style={{fontFamily:'var(--mono)',fontSize:12,color:'var(--accent)',fontWeight:600}}>{s.user_id}</div>
+                    <div style={{fontSize:11,color:'var(--ink-4)'}}>{s.area} · {s.date}</div>
                   </div>
                 </div>
               </div>
-              <div style={{padding:'16px 20px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:16}}>
-                <div>
-                  <div style={{fontSize:11, fontWeight:600, color:'var(--ink4)', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:6}}>Today's Focus</div>
-                  <div style={{fontSize:13, color:'var(--ink2)'}}>{s.focus}</div>
-                </div>
-                <div>
-                  <div style={{fontSize:11, fontWeight:600, color:'var(--ink4)', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:6}}>Yesterday's Wins</div>
-                  <div style={{fontSize:13, color:'var(--ink2)'}}>{s.wins}</div>
-                </div>
-                {s.blockers && s.blockers !== '_None_ ✅' && (
-                  <div style={{gridColumn:'1/-1'}}>
-                    <div style={{fontSize:11, fontWeight:600, color:'var(--red)', textTransform:'uppercase', letterSpacing:'0.5px', marginBottom:6}}>Blockers</div>
-                    <div style={{fontSize:13, color:'var(--ink2)'}}>{s.blockers}</div>
-                  </div>
+              <div style={{padding:'16px 20px',display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+                <div><div style={{fontSize:11,fontWeight:600,color:'var(--ink-4)',textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:5}}>Today's Focus</div><div style={{fontSize:13,color:'var(--ink-2)'}}>{s.focus}</div></div>
+                <div><div style={{fontSize:11,fontWeight:600,color:'var(--ink-4)',textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:5}}>Yesterday's Wins</div><div style={{fontSize:13,color:'var(--ink-2)'}}>{s.wins}</div></div>
+                {s.blockers&&s.blockers!=='_None_ ✅'&&(
+                  <div style={{gridColumn:'1/-1'}}><div style={{fontSize:11,fontWeight:600,color:'var(--red)',textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:5}}>Blockers</div><div style={{fontSize:13,color:'var(--ink-2)'}}>{s.blockers}</div></div>
                 )}
               </div>
             </div>
@@ -1705,8 +2302,8 @@ function Standups() {
 // ── INTELLIGENCE ─────────────────────────
 function Intelligence() {
   const [tab, setTab] = useState('log');
-  const [log, setLog]   = useState([]);
-  const [unk, setUnk]   = useState([]);
+  const [log, setLog] = useState([]);
+  const [unk, setUnk] = useState([]);
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
@@ -1715,65 +2312,59 @@ function Intelligence() {
     api.get('/api/interactions/stats').then(setStats);
   }, []);
 
-  const ic = i => i==='claude'?'badge-blue':i==='unknown'||i==='claude_error'?'badge-red':'badge-gray';
+  const ic = i=>i==='claude'?'badge-purple':i==='unknown'||i==='claude_error'?'badge-red':'badge-gray';
 
   return (
     <div>
       <div className="section-header"><h1 className="section-title">Intelligence</h1></div>
-
-      {stats && (
-        <div className="stat-grid" style={{gridTemplateColumns:'repeat(4,1fr)', marginBottom:16}}>
+      {stats&&(
+        <div className="bento" style={{marginBottom:16}}>
           {[
-            { label:'Total Chats',   val:stats.total,       color:'' },
-            { label:'Hit Rate',      val:`${stats.hitRate}%`, color:stats.hitRate>80?'green':'yellow' },
-            { label:'Claude Calls',  val:stats.claudeCalls,  color:'blue', sub:`~$${(stats.claudeCalls*0.0005).toFixed(3)}` },
-            { label:'Unknowns',      val:stats.misses,       color:stats.misses>10?'yellow':'' },
-          ].map(s => (
-            <div className="stat-card" key={s.label}>
-              <div className="stat-label">{s.label}</div>
-              <div className={`stat-value ${s.color}`}>{s.val}</div>
-              {s.sub && <div className="stat-sub">{s.sub}</div>}
+            {label:'Total Chats',val:stats.total,color:''},
+            {label:'Hit Rate',   val:`${stats.hitRate}%`,color:stats.hitRate>80?'green':'yellow'},
+            {label:'Claude Calls',val:stats.claudeCalls,color:'purple',sub:`~$${(stats.claudeCalls*0.0005).toFixed(3)}`},
+            {label:'Unknowns',   val:stats.misses,color:stats.misses>10?'yellow':''},
+          ].map(s=>(
+            <div key={s.label} className="bento-card col-3">
+              <div className="kpi-label">{s.label}</div>
+              <div className={`kpi-value ${s.color}`}>{s.val}</div>
+              {s.sub&&<div className="kpi-sub">{s.sub}</div>}
             </div>
           ))}
         </div>
       )}
-
       <div className="tabs">
-        {['log','unknowns','stats'].map(t => <div key={t} className={`tab ${tab===t?'active':''}`} onClick={() => setTab(t)}>{t}</div>)}
+        {['log','unknowns','stats'].map(t=><div key={t} className={`tab ${tab===t?'active':''}`} onClick={()=>setTab(t)}>{t}</div>)}
       </div>
-
-      {tab==='log' && (
+      {tab==='log'&&(
         <div className="card">
-          <div className="card-body" style={{padding:0}}>
+          <div style={{padding:'0 20px'}}>
             {log.length===0
               ? <div className="empty"><div className="empty-text">No interactions yet</div></div>
-              : <div style={{padding:'0 20px'}}>
-                  {log.map((i,idx) => (
-                    <div key={idx} className="int-row">
-                      <div className="int-user">{i.user_id?.slice(-6)}</div>
-                      <div className="int-text">{i.normalized_text?.substring(0,120)}</div>
-                      <span className={`badge int-badge ${ic(i.intent_matched)}`}>{i.intent_matched}</span>
-                    </div>
-                  ))}
-                </div>
+              : log.map((i,idx)=>(
+                  <div key={idx} className="int-row">
+                    <div className="int-user">{i.user_id?.slice(-6)}</div>
+                    <div className="int-text">{i.normalized_text?.substring(0,100)}</div>
+                    <span className={`badge ${ic(i.intent_matched)}`} style={{flexShrink:0,marginLeft:8}}>{i.intent_matched}</span>
+                  </div>
+                ))
             }
           </div>
         </div>
       )}
-
-      {tab==='unknowns' && (
+      {tab==='unknowns'&&(
         <div className="card">
           {unk.length===0
             ? <div className="empty"><div className="empty-icon">🧠</div><div className="empty-text">TITAN is handling everything</div></div>
             : <div className="table-wrap">
                 <table>
-                  <thead><tr><th>Message</th><th>Seen</th><th>Last</th></tr></thead>
+                  <thead><tr><th>Message</th><th>Times</th><th>Last Seen</th></tr></thead>
                   <tbody>
-                    {unk.map((u,i) => (
+                    {unk.map((u,i)=>(
                       <tr key={i}>
-                        <td style={{fontFamily:'var(--mono)', fontSize:12, color:'var(--yellow)', maxWidth:280}}>{u.normalized_text}</td>
+                        <td style={{fontFamily:'var(--mono)',fontSize:12,color:'var(--yellow)',maxWidth:300}}>{u.normalized_text}</td>
                         <td><span className="badge badge-yellow">{u.count}×</span></td>
-                        <td style={{fontSize:12, color:'var(--ink4)'}}>{new Date(u.last_seen).toLocaleDateString()}</td>
+                        <td style={{fontSize:12,color:'var(--ink-4)'}}>{new Date(u.last_seen).toLocaleDateString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1782,36 +2373,31 @@ function Intelligence() {
           }
         </div>
       )}
-
-      {tab==='stats' && stats && (
+      {tab==='stats'&&stats&&(
         <div className="grid-2">
           <div className="card">
             <div className="card-header"><div className="card-title">Top Intents</div></div>
-            <div className="card-body">
-              <div className="bar-chart">
-                {stats.topIntents.map(i => (
-                  <div className="bar-row" key={i.intent_matched}>
-                    <div className="bar-label">{i.intent_matched}</div>
-                    <div className="bar-track"><div className="bar-fill" style={{width:`${Math.min(100,(i.cnt/stats.topIntents[0]?.cnt)*100)}%`}} /></div>
-                    <div className="bar-count">{i.cnt}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <div className="card-body"><div className="bar-chart">
+              {stats.topIntents.map(i=>(
+                <div className="bar-row" key={i.intent_matched}>
+                  <div className="bar-label">{i.intent_matched}</div>
+                  <div className="bar-track"><div className="bar-fill" style={{width:`${Math.min(100,(i.cnt/stats.topIntents[0]?.cnt)*100)}%`}}/></div>
+                  <div className="bar-count">{i.cnt}</div>
+                </div>
+              ))}
+            </div></div>
           </div>
           <div className="card">
             <div className="card-header"><div className="card-title">Active Users</div></div>
-            <div className="card-body">
-              <div className="bar-chart">
-                {stats.topUsers.map(u => (
-                  <div className="bar-row" key={u.user_id}>
-                    <div className="bar-label">{u.user_id?.slice(-8)}</div>
-                    <div className="bar-track"><div className="bar-fill green" style={{width:`${Math.min(100,(u.cnt/stats.topUsers[0]?.cnt)*100)}%`}} /></div>
-                    <div className="bar-count">{u.cnt}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <div className="card-body"><div className="bar-chart">
+              {stats.topUsers.map(u=>(
+                <div className="bar-row" key={u.user_id}>
+                  <div className="bar-label">{u.user_id?.slice(-8)}</div>
+                  <div className="bar-track"><div className="bar-fill green" style={{width:`${Math.min(100,(u.cnt/stats.topUsers[0]?.cnt)*100)}%`}}/></div>
+                  <div className="bar-count">{u.cnt}</div>
+                </div>
+              ))}
+            </div></div>
           </div>
         </div>
       )}
@@ -1838,42 +2424,40 @@ function Patterns() {
   return (
     <div>
       <div className="section-header"><h1 className="section-title">Patterns</h1></div>
-
       <div className="card" style={{marginBottom:16}}>
         <div className="card-header"><div className="card-title">Teach TITAN</div></div>
         <div className="card-body">
-          <div style={{display:'flex', gap:10, alignItems:'flex-end', flexWrap:'wrap'}}>
-            <div style={{flex:2, minWidth:160}}>
+          <div style={{display:'flex',gap:10,alignItems:'flex-end',flexWrap:'wrap'}}>
+            <div style={{flex:2,minWidth:150}}>
               <label className="form-label">Trigger Phrase</label>
-              <input className="form-input" value={form.triggerPhrase} onChange={e => setForm(p=>({...p,triggerPhrase:e.target.value}))} placeholder='e.g. "cuanto llevamos"' />
+              <input className="form-input" value={form.triggerPhrase} onChange={e=>setForm(p=>({...p,triggerPhrase:e.target.value}))} placeholder='"cuanto llevamos"'/>
             </div>
-            <div style={{color:'var(--ink4)', fontSize:18, paddingBottom:10, flexShrink:0}}>→</div>
-            <div style={{flex:1, minWidth:140}}>
+            <div style={{color:'var(--ink-5)',fontSize:16,paddingBottom:8,flexShrink:0}}>→</div>
+            <div style={{flex:1,minWidth:130}}>
               <label className="form-label">Intent</label>
-              <select className="form-select" value={form.intentTarget} onChange={e => setForm(p=>({...p,intentTarget:e.target.value}))}>
+              <select className="form-select" value={form.intentTarget} onChange={e=>setForm(p=>({...p,intentTarget:e.target.value}))}>
                 <option value="">Select…</option>
-                {INTENTS.map(i => <option key={i} value={i}>{i}</option>)}
+                {INTENTS.map(i=><option key={i} value={i}>{i}</option>)}
               </select>
             </div>
-            <button className="btn btn-primary" style={{flexShrink:0, marginBottom:1}} onClick={add}>Add</button>
+            <button className="btn btn-primary btn-sm" style={{flexShrink:0,marginBottom:1}} onClick={add}>+ Add</button>
           </div>
         </div>
       </div>
-
       <div className="card">
         <div className="card-header"><div className="card-title">Learned Patterns ({patterns.length})</div></div>
         {patterns.length===0
-          ? <div className="empty"><div className="empty-icon">🧠</div><div className="empty-text">No patterns yet. Teach TITAN something.</div></div>
-          : patterns.map(p => (
+          ? <div className="empty"><div className="empty-icon">🧠</div><div className="empty-text">No patterns yet</div></div>
+          : patterns.map(p=>(
               <div key={p.id} className="pattern-row">
                 <div className="pattern-trigger">"{p.trigger_phrase}"</div>
                 <div className="pattern-arrow">→</div>
                 <div className="pattern-intent">{p.intent_target}</div>
                 <div className="pattern-count">{p.use_count}×</div>
                 <span className={`badge ${p.active?'badge-green':'badge-gray'}`}>{p.active?'on':'off'}</span>
-                <div style={{display:'flex', gap:4, marginLeft:8}}>
-                  <button className="btn-icon" onClick={() => api.patch(`/api/patterns/${p.id}`,{active:!p.active}).then(load)}>{p.active?'⏸':'▶'}</button>
-                  <button className="btn-icon" style={{color:'var(--red)'}} onClick={() => { if(confirm('Delete?')) api.delete(`/api/patterns/${p.id}`).then(load); }}>✕</button>
+                <div style={{display:'flex',gap:4,marginLeft:8}}>
+                  <button className="icon-action" onClick={()=>api.patch(`/api/patterns/${p.id}`,{active:!p.active}).then(load)}>{p.active?'⏸':'▶'}</button>
+                  <button className="icon-action" style={{color:'var(--red)'}} onClick={()=>{if(confirm('Delete?'))api.delete(`/api/patterns/${p.id}`).then(load);}}>✕</button>
                 </div>
               </div>
             ))
@@ -1885,100 +2469,77 @@ function Patterns() {
 
 // ── SLACK CONTROL ────────────────────────
 function SlackControl() {
-  const [tab, setTab]   = useState('announce');
-  const [ch, setCh]     = useState('standup');
-  const [msg, setMsg]   = useState('');
+  const [tab, setTab] = useState('announce');
+  const [ch, setCh] = useState('standup');
+  const [msg, setMsg] = useState('');
   const [pollQ, setPollQ] = useState('');
-  const [winClinic, setWinClinic] = useState('');
-  const [winInd, setWinInd]       = useState('');
+  const [winC, setWinC] = useState('');
+  const [winI, setWinI] = useState('');
 
   const CHS = [
-    {key:'wins',label:'#wins'}, {key:'standup',label:'#daily-standup'},
-    {key:'ops_alerts',label:'#ops-alerts'}, {key:'sales',label:'#marketing'},
-    {key:'dev',label:'#engineering'}, {key:'onboarding',label:'#client-onboarding'},
+    {key:'wins',label:'#wins'},{key:'standup',label:'#daily-standup'},
+    {key:'ops_alerts',label:'#ops-alerts'},{key:'sales',label:'#marketing'},
+    {key:'dev',label:'#engineering'},{key:'onboarding',label:'#client-onboarding'},
+    {key:'feedback',label:'#customer-feedback'},{key:'debugging',label:'#debugging-and-testing'},
+    {key:'ideas',label:'#ideas'},{key:'deployments',label:'#deployments'},
+    {key:'bot_logs',label:'#bot-logs'},{key:'general',label:'#general'},
+    {key:'general_cf',label:'#general-clinicflow'},{key:'biz_metrics',label:'#biz-metrics'},
+    {key:'varios',label:'#varios'},{key:'product',label:'#product'},
   ];
 
   const post = async (endpoint, body) => {
     const r = await api.post(endpoint, body);
     if (r?.success) toast('Posted to Slack ✓','success');
-    else toast(r?.error || 'Failed — check SLACK_BOT_TOKEN','error');
+    else toast(r?.error||'Failed — check SLACK_BOT_TOKEN','error');
   };
 
   return (
     <div>
       <div className="section-header"><h1 className="section-title">Slack</h1></div>
-
       <div className="tabs">
-        {['announce','poll','celebrate','triggers'].map(t => <div key={t} className={`tab ${tab===t?'active':''}`} onClick={() => setTab(t)}>{t}</div>)}
+        {['announce','poll','celebrate','triggers'].map(t=><div key={t} className={`tab ${tab===t?'active':''}`} onClick={()=>setTab(t)}>{t}</div>)}
       </div>
-
-      {tab==='announce' && (
+      {tab==='announce'&&(
         <div className="card">
           <div className="card-body">
-            <div className="form-group">
-              <label className="form-label">Channel</label>
-              <div className="channel-pills">
-                {CHS.map(c => <div key={c.key} className={`channel-pill ${ch===c.key?'active':''}`} onClick={() => setCh(c.key)}>{c.label}</div>)}
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Message</label>
-              <textarea className="form-textarea" value={msg} onChange={e => setMsg(e.target.value)} placeholder="Your announcement…" style={{minHeight:100}} />
-            </div>
-            <button className="btn btn-primary" onClick={() => msg.trim() && post('/api/slack/announce',{channel:ch,message:msg})}>Post Announcement</button>
+            <div className="form-group"><label className="form-label">Channel</label><div className="channel-pills">{CHS.map(c=><div key={c.key} className={`channel-pill ${ch===c.key?'active':''}`} onClick={()=>setCh(c.key)}>{c.label}</div>)}</div></div>
+            <div className="form-group"><label className="form-label">Message</label><textarea className="form-textarea" value={msg} onChange={e=>setMsg(e.target.value)} placeholder="Your announcement…" style={{minHeight:100}}/></div>
+            <button className="btn btn-primary" onClick={()=>msg.trim()&&post('/api/slack/announce',{channel:ch,message:msg})}>Post Announcement</button>
           </div>
         </div>
       )}
-
-      {tab==='poll' && (
+      {tab==='poll'&&(
         <div className="card">
           <div className="card-body">
-            <div className="form-group">
-              <label className="form-label">Channel</label>
-              <div className="channel-pills">
-                {CHS.map(c => <div key={c.key} className={`channel-pill ${ch===c.key?'active':''}`} onClick={() => setCh(c.key)}>{c.label}</div>)}
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Question</label>
-              <input className="form-input" value={pollQ} onChange={e => setPollQ(e.target.value)} placeholder="Should we move the call to Friday?" />
-            </div>
-            <div style={{fontSize:12, color:'var(--ink4)', marginBottom:14}}>Team votes 👍 Yes · 👎 No · 🤷 Maybe</div>
-            <button className="btn btn-primary" onClick={() => pollQ.trim() && post('/api/slack/poll',{channel:ch,question:pollQ})}>Post Poll</button>
+            <div className="form-group"><label className="form-label">Channel</label><div className="channel-pills">{CHS.slice(0,8).map(c=><div key={c.key} className={`channel-pill ${ch===c.key?'active':''}`} onClick={()=>setCh(c.key)}>{c.label}</div>)}</div></div>
+            <div className="form-group"><label className="form-label">Question</label><input className="form-input" value={pollQ} onChange={e=>setPollQ(e.target.value)} placeholder="Should we move the call to Friday?"/></div>
+            <div style={{fontSize:12,color:'var(--ink-4)',marginBottom:14}}>Team votes 👍 Yes · 👎 No · 🤷 Maybe</div>
+            <button className="btn btn-primary" onClick={()=>pollQ.trim()&&post('/api/slack/poll',{channel:ch,question:pollQ})}>Post Poll</button>
           </div>
         </div>
       )}
-
-      {tab==='celebrate' && (
+      {tab==='celebrate'&&(
         <div className="card">
           <div className="card-body">
-            <div className="form-group">
-              <label className="form-label">Clinic Name</label>
-              <input className="form-input" value={winClinic} onChange={e => setWinClinic(e.target.value)} placeholder="e.g. Clínica Santa Rosa" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Industry</label>
-              <input className="form-input" value={winInd} onChange={e => setWinInd(e.target.value)} placeholder="e.g. Dental, General Medicine" />
-            </div>
-            <div style={{fontSize:12, color:'var(--ink4)', marginBottom:14}}>Posts to #wins and increments client counter</div>
-            <button className="btn btn-primary" onClick={() => winClinic.trim() && post('/api/slack/new-win',{clinicName:winClinic,industry:winInd})}>🚀 Announce Win</button>
+            <div className="form-group"><label className="form-label">Clinic Name</label><input className="form-input" value={winC} onChange={e=>setWinC(e.target.value)} placeholder="e.g. Clínica Santa Rosa"/></div>
+            <div className="form-group"><label className="form-label">Industry</label><input className="form-input" value={winI} onChange={e=>setWinI(e.target.value)} placeholder="e.g. Dental, General Medicine"/></div>
+            <button className="btn btn-primary" onClick={()=>winC.trim()&&post('/api/slack/new-win',{clinicName:winC,industry:winI})}>🚀 Announce Win</button>
           </div>
         </div>
       )}
-
-      {tab==='triggers' && (
+      {tab==='triggers'&&(
         <div className="card">
           {[
-            { icon:'⌛', title:'End-of-Day Reflection', desc:'Posts reflection prompt to #daily-standup', endpoint:'/api/slack/reflection', body:{} },
-            { icon:'⚡', title:'Daily Briefing', desc:'Triggers AI briefing to #daily-standup', endpoint:'/api/slack/briefing', body:{} },
-          ].map(a => (
-            <div className="action-row" key={a.title}>
-              <div className="action-icon">{a.icon}</div>
-              <div className="action-info">
-                <div className="action-title">{a.title}</div>
-                <div className="action-desc">{a.desc}</div>
+            {icon:'⌛',title:'End-of-Day Reflection',desc:'Posts check-in to #daily-standup',endpoint:'/api/slack/reflection',body:{}},
+            {icon:'⚡',title:'Daily AI Briefing',desc:'Triggers briefing to #daily-standup',endpoint:'/api/slack/briefing',body:{}},
+          ].map(a=>(
+            <div key={a.title} style={{display:'flex',alignItems:'center',gap:16,padding:'16px 20px',borderBottom:'1px solid var(--border-1)'}}>
+              <div style={{fontSize:22,width:40,textAlign:'center'}}>{a.icon}</div>
+              <div style={{flex:1}}>
+                <div style={{fontSize:14,fontWeight:600,color:'var(--ink-1)'}}>{a.title}</div>
+                <div style={{fontSize:12,color:'var(--ink-4)',marginTop:2}}>{a.desc}</div>
               </div>
-              <button className="btn btn-ghost btn-sm" onClick={() => post(a.endpoint, a.body)}>Send →</button>
+              <button className="btn btn-ghost btn-sm" onClick={()=>post(a.endpoint,a.body)}>Send →</button>
             </div>
           ))}
         </div>
@@ -1990,58 +2551,56 @@ function SlackControl() {
 // ── COMMANDS ─────────────────────────────
 function Commands() {
   const [active, setActive] = useState(null);
-
   const CMDS = [
-    { section:'Standup & Visibility', items:[
-      { cmd:'/standup',        desc:'Submit daily standup', detail:'Opens a modal: focus, wins, blockers, area. Posts to #daily-standup.' },
-      { cmd:'/standup-report', desc:'See who submitted today', detail:'Shows submitted vs missing team members.' },
-      { cmd:'/reflection',     desc:'Send end-of-day check-in', detail:'Posts reflection prompt with energy buttons.' },
+    {section:'Standup & Visibility',items:[
+      {cmd:'/standup',desc:'Submit daily standup',detail:'Modal: focus, wins, blockers, area. Posts to #daily-standup.'},
+      {cmd:'/standup-report',desc:'See who submitted today',detail:'Shows submitted vs missing.'},
+      {cmd:'/reflection',desc:'Send end-of-day check-in',detail:'Posts reflection prompt with energy buttons.'},
     ]},
-    { section:'Task Tracker', items:[
-      { cmd:'/task',  desc:'Create a task via modal', detail:'Title, assignee, priority, area, due date. DMs assignee.' },
-      { cmd:'/tasks', desc:'View open tasks', detail:'Filter: /tasks dev, /tasks @user' },
+    {section:'Task Tracker',items:[
+      {cmd:'/task',desc:'Create a task via modal',detail:'Title, assignee, priority, area, due date. DMs assignee.'},
+      {cmd:'/tasks',desc:'View open tasks',detail:'Filter: /tasks dev, /tasks @user'},
     ]},
-    { section:'Sales', items:[
-      { cmd:'/lead',     desc:'Log a new clinic lead', detail:'Clinic name, contact, stage, notes.' },
-      { cmd:'/pipeline', desc:'View active pipeline', detail:'All leads by stage with hot lead alerts.' },
+    {section:'Sales',items:[
+      {cmd:'/lead',desc:'Log a new clinic lead',detail:'Clinic name, contact, stage, notes.'},
+      {cmd:'/pipeline',desc:'View active pipeline',detail:'All leads by stage with hot lead alerts.'},
     ]},
-    { section:'Bugs', items:[
-      { cmd:'/bug', desc:'Report a bug', detail:'Title, severity, steps, assignee. Critical → #ops-alerts.' },
+    {section:'Bugs',items:[
+      {cmd:'/bug',desc:'Report a bug',detail:'Title, severity, steps, assignee. Critical → #ops-alerts.'},
     ]},
-    { section:'Onboarding', items:[
-      { cmd:'/onboard',     desc:'Start clinic onboarding', detail:'Creates 6-step checklist + Slack canvas.' },
-      { cmd:'/onboardings', desc:'View active onboardings', detail:'Shows progress per clinic.' },
+    {section:'Onboarding',items:[
+      {cmd:'/onboard',desc:'Start clinic onboarding',detail:'6-step checklist + Slack canvas auto-created.'},
+      {cmd:'/onboardings',desc:'View active onboardings',detail:'Shows progress per clinic.'},
     ]},
-    { section:'Reporting', items:[
-      { cmd:'/report',        desc:'Full business dashboard', detail:'Tasks, bugs, leads, onboardings, metrics.' },
-      { cmd:'/weekly',        desc:'Post weekly summary', detail:'Posts to #ops-alerts.' },
-      { cmd:'/clinic-status', desc:'Quick system status', detail:'Live counts for all metrics.' },
+    {section:'Reporting',items:[
+      {cmd:'/report',desc:'Full business dashboard',detail:'Tasks, bugs, leads, onboardings, metrics.'},
+      {cmd:'/weekly',desc:'Post weekly summary',detail:'Posts to #ops-alerts.'},
+      {cmd:'/clinic-status',desc:'Quick system status',detail:'Live counts for all metrics.'},
     ]},
-    { section:'Tools', items:[
-      { cmd:'/new-win [Name] [Industry]', desc:'Celebrate a new client', detail:'Posts to #wins.' },
-      { cmd:'/announce',     desc:'Broadcast to channel', detail:'Formatted announcement with your name.' },
-      { cmd:'/poll',         desc:'Create a team poll', detail:'Posts 👍👎🤷 poll.' },
-      { cmd:'/create-canvas [Clinic]', desc:'Create onboarding canvas', detail:'Slack canvas with onboarding checklist.' },
-      { cmd:'/cleanup-tests', desc:'Delete bot test messages', detail:'Scans last 50 messages, deletes TEST ones.' },
-      { cmd:'/help-titan',   desc:'Show command list', detail:'Full ephemeral command reference.' },
+    {section:'Tools',items:[
+      {cmd:'/new-win [Name] [Industry]',desc:'Celebrate a new client',detail:'Posts to #wins.'},
+      {cmd:'/announce',desc:'Broadcast to channel',detail:'Formatted announcement.'},
+      {cmd:'/poll',desc:'Create a team poll',detail:'Posts 👍👎🤷 poll.'},
+      {cmd:'/create-canvas [Clinic]',desc:'Create onboarding canvas',detail:'Slack canvas with checklist.'},
+      {cmd:'/cleanup-tests',desc:'Delete test messages',detail:'Scans last 50 messages.'},
+      {cmd:'/help-titan',desc:'Show command list',detail:'Full ephemeral reference.'},
     ]},
-    { section:'Conversational (DM or @mention)', items:[
-      { cmd:'"how are we doing?"',   desc:'Full status overview',    detail:'Also: "como vamos", "status"' },
-      { cmd:'"show me blocked tasks"',desc:'Blocked tasks only',     detail:'Also: "algo bloqueado?"' },
-      { cmd:'"what should I focus on?"',desc:'Recommendation',      detail:'Also: "que deberia hacer?"' },
-      { cmd:'"I\'m overwhelmed"',    desc:'Priority breakdown',      detail:'Also: "hay mucho"' },
-      { cmd:'"how\'s the pipeline?"', desc:'Sales summary',          detail:'Also: "como va el pipeline?"' },
-      { cmd:'"is the site up?"',     desc:'Uptime check',            detail:'Also: "clinicflow up?"' },
-      { cmd:'"vamos titan"',         desc:'Hype response',           detail:'Also: "let\'s go", "dale"' },
-      { cmd:'learn: "phrase" → intent', desc:'Teach TITAN',          detail:'Admin only. Maps phrase to intent.' },
+    {section:'Conversational',items:[
+      {cmd:'"how are we doing?"',desc:'Full status overview',detail:'Also: "como vamos", "status"'},
+      {cmd:'"show me blocked tasks"',desc:'Blocked tasks only',detail:'Also: "algo bloqueado?"'},
+      {cmd:'"what should I focus on?"',desc:'AI recommendation',detail:'Also: "que deberia hacer?"'},
+      {cmd:'"I\'m overwhelmed"',desc:'Priority breakdown',detail:'Also: "hay mucho"'},
+      {cmd:'"is the site up?"',desc:'Uptime check',detail:'Also: "clinicflow up?"'},
+      {cmd:'"vamos titan"',desc:'Hype response',detail:'Also: "let\'s go", "dale"'},
+      {cmd:'learn: "phrase" → intent',desc:'Teach TITAN new pattern',detail:'Admin only. Permanent.'},
     ]},
-    { section:'Automated (no trigger needed)', items:[
-      { cmd:'8:45am Mon–Fri',   desc:'AI Daily Briefing',    detail:'Posted to #daily-standup automatically.' },
-      { cmd:'9:00am Mon–Fri',   desc:'Standup reminder DMs', detail:'DMs everyone who hasn\'t submitted.' },
-      { cmd:'10:00am Mon–Fri',  desc:'Public standup check', detail:'Submitted vs missing in #daily-standup.' },
-      { cmd:'6:00pm Mon–Fri',   desc:'End-of-day reflection',detail:'Energy check + prompt to #daily-standup.' },
-      { cmd:'Every 5 minutes',  desc:'Uptime monitor',       detail:'Pings clinicflow.lat. Alerts on downtime.' },
-      { cmd:'🔴 reaction',      desc:'Instant escalation',   detail:'Routes any message to #ops-alerts.' },
+    {section:'Automated',items:[
+      {cmd:'8:45am Mon–Fri',desc:'AI Daily Briefing',detail:'Auto-posted to #daily-standup.'},
+      {cmd:'9:00am Mon–Fri',desc:'Standup reminder DMs',detail:'DMs everyone who hasn\'t submitted.'},
+      {cmd:'10:00am Mon–Fri',desc:'Public standup check',detail:'Submitted vs missing post.'},
+      {cmd:'6:00pm Mon–Fri',desc:'End-of-day reflection',detail:'Energy check + prompt.'},
+      {cmd:'Every 5 minutes',desc:'Uptime monitor',detail:'Pings clinicflow.lat.'},
+      {cmd:'🔴 reaction',desc:'Instant escalation',detail:'Routes any message to #ops-alerts.'},
     ]},
   ];
 
@@ -2049,20 +2608,19 @@ function Commands() {
     <div>
       <div className="section-header">
         <h1 className="section-title">Commands</h1>
-        <span style={{fontSize:13, color:'var(--ink4)'}}>{CMDS.reduce((a,s)=>a+s.items.length,0)} total</span>
+        <span style={{fontSize:13,color:'var(--ink-4)'}}>{CMDS.reduce((a,s)=>a+s.items.length,0)} total</span>
       </div>
-
       <div className="card">
         <div className="card-body">
-          {CMDS.map(sec => (
+          {CMDS.map(sec=>(
             <div key={sec.section}>
-              <div className="cmd-section-title">{sec.section}</div>
-              {sec.items.map(item => (
-                <div key={item.cmd} className="cmd-row" onClick={() => setActive(active===item.cmd?null:item.cmd)}>
-                  <div className="cmd-name">{item.cmd}</div>
-                  <div className="cmd-desc">
-                    {item.desc}
-                    {active===item.cmd && <div className="cmd-detail">{item.detail}</div>}
+              <div className="cmd-section-title" style={{fontSize:11,fontWeight:600,color:'var(--ink-4)',textTransform:'uppercase',letterSpacing:'0.5px',margin:'20px 0 8px'}}>{sec.section}</div>
+              {sec.items.map(item=>(
+                <div key={item.cmd} className="cmd-row" style={{display:'flex',alignItems:'flex-start',gap:12,padding:'10px 0',borderBottom:'1px solid var(--border-1)',cursor:'pointer'}} onClick={()=>setActive(active===item.cmd?null:item.cmd)}>
+                  <div style={{fontFamily:'var(--mono)',fontSize:12,fontWeight:500,color:'var(--accent)',width:190,flexShrink:0,wordBreak:'break-all'}}>{item.cmd}</div>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:13,color:'var(--ink-2)'}}>{item.desc}</div>
+                    {active===item.cmd&&<div style={{fontSize:12,color:'var(--ink-4)',marginTop:6,padding:'6px 10px',background:'var(--surface-2)',borderRadius:'var(--r-xs)',borderLeft:'2px solid var(--accent)'}}>{item.detail}</div>}
                   </div>
                 </div>
               ))}
@@ -2074,48 +2632,164 @@ function Commands() {
   );
 }
 
-// ── APP ──────────────────────────────────
+// ── SEARCH ───────────────────────────────
+function Search({ onNavigate, onClose }) {
+  const [q, setQ] = useState('');
+  const [results, setResults] = useState({ tasks:[], leads:[], bugs:[], onbs:[] });
+  const [loading, setLoading] = useState(false);
+  const inputRef = useRef(null);
+
+  useEffect(() => { inputRef.current?.focus(); }, []);
+
+  useEffect(() => {
+    if (q.length < 2) { setResults({tasks:[],leads:[],bugs:[],onbs:[]}); return; }
+    setLoading(true);
+    const t = setTimeout(async () => {
+      const [tasks, leads, bugs, onbs] = await Promise.all([
+        api.get(`/api/tasks?status=all`),
+        api.get('/api/leads'),
+        api.get('/api/bugs'),
+        api.get('/api/onboardings'),
+      ]);
+      const lq = q.toLowerCase();
+      setResults({
+        tasks: tasks?.filter(t => t.title?.toLowerCase().includes(lq)).slice(0,4) || [],
+        leads: leads?.filter(l => l.clinic_name?.toLowerCase().includes(lq)).slice(0,4) || [],
+        bugs:  bugs?.filter(b => b.title?.toLowerCase().includes(lq)).slice(0,4) || [],
+        onbs:  onbs?.filter(o => o.clinic_name?.toLowerCase().includes(lq)).slice(0,4) || [],
+      });
+      setLoading(false);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [q]);
+
+  const total = Object.values(results).reduce((a,v)=>a+v.length, 0);
+
+  return (
+    <div className="cmd-overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div className="cmd-box">
+        <div className="cmd-input-wrap">
+          <span className="cmd-input-icon">🔍</span>
+          <input ref={inputRef} className="cmd-input" placeholder="Search tasks, leads, bugs, clinics…" value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Escape'&&onClose()} />
+          {loading && <div className="spinner" style={{flexShrink:0}}/>}
+        </div>
+        <div className="cmd-results">
+          {q.length < 2 && <div className="empty" style={{padding:24}}><div className="empty-text">Type to search across everything</div></div>}
+          {q.length >= 2 && total === 0 && !loading && <div className="empty" style={{padding:24}}><div className="empty-text">No results for "{q}"</div></div>}
+          {results.tasks.length > 0 && (
+            <div>
+              <div className="cmd-group-label">Tasks</div>
+              {results.tasks.map(t=>(
+                <div key={t.id} className="cmd-item" onClick={()=>{onNavigate('tasks');onClose();}}>
+                  <div className="cmd-item-icon">✓</div>
+                  <span className="cmd-item-label">{t.title}</span>
+                  <span className="cmd-item-desc">{t.status}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          {results.leads.length > 0 && (
+            <div>
+              <div className="cmd-group-label">Leads</div>
+              {results.leads.map(l=>(
+                <div key={l.id} className="cmd-item" onClick={()=>{onNavigate('leads');onClose();}}>
+                  <div className="cmd-item-icon">◉</div>
+                  <span className="cmd-item-label">{l.clinic_name}</span>
+                  <span className="cmd-item-desc">{l.stage}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          {results.bugs.length > 0 && (
+            <div>
+              <div className="cmd-group-label">Bugs</div>
+              {results.bugs.map(b=>(
+                <div key={b.id} className="cmd-item" onClick={()=>{onNavigate('bugs');onClose();}}>
+                  <div className="cmd-item-icon">⬡</div>
+                  <span className="cmd-item-label">{b.title}</span>
+                  <span className="cmd-item-desc">{b.sev_val}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          {results.onbs.length > 0 && (
+            <div>
+              <div className="cmd-group-label">Onboardings</div>
+              {results.onbs.map(o=>(
+                <div key={o.id} className="cmd-item" onClick={()=>{onNavigate('onboardings');onClose();}}>
+                  <div className="cmd-item-icon">⬢</div>
+                  <span className="cmd-item-label">{o.clinic_name}</span>
+                  <span className="cmd-item-desc">{o.status}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="cmd-footer"><span><span className="kbd">ESC</span> close</span></div>
+      </div>
+    </div>
+  );
+}
+
+// ── MAIN APP ─────────────────────────────
 function App() {
-  const [user, setUser]     = useState(null);
-  const [page, setPage]     = useState('overview');
+  const [user, setUser]       = useState(null);
+  const [page, setPage]       = useState('overview');
   const [overview, setOverview] = useState(null);
   const [checking, setChecking] = useState(true);
+  const [theme, setTheme]     = useState(() => localStorage.getItem('theme') || 'light');
+  const [cmdOpen, setCmdOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [notifOpen, setNotifOpen]   = useState(false);
+  const [notifs, setNotifs]   = useState([
+    { text:'TITAN daily briefing posted to #daily-standup', time:'8:45am today', unread:true },
+    { text:'Standup reminder sent to 2 team members', time:'9:00am today', unread:true },
+    { text:'clinicflow.lat uptime check: 99.9% this week', time:'Yesterday', unread:false },
+  ]);
+
+  const unreadCount = notifs.filter(n=>n.unread).length;
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     if (api.token) {
-      api.get('/api/me')
-        .then(u => { if (u?.username) setUser(u); })
-        .finally(() => setChecking(false));
+      api.get('/api/me').then(u => { if (u?.username) setUser(u); }).finally(() => setChecking(false));
     } else {
       setChecking(false);
     }
-
-    const iv = setInterval(() => {
-      if (api.token) api.get('/api/overview').then(setOverview);
-    }, 30000);
-
+    const iv = setInterval(() => { if (api.token) api.get('/api/overview').then(setOverview); }, 30000);
     if (api.token) api.get('/api/overview').then(setOverview);
-
     return () => clearInterval(iv);
   }, []);
 
-  if (checking) return (
-    <div className="loading" style={{height:'100dvh'}}>
-      <div className="spinner" />
-      <span>Loading…</span>
-    </div>
-  );
+  // Global keyboard shortcuts
+  useEffect(() => {
+    function onKey(e) {
+      if ((e.metaKey||e.ctrlKey) && e.key==='k') { e.preventDefault(); setCmdOpen(p=>!p); }
+      if ((e.metaKey||e.ctrlKey) && e.key==='f') { e.preventDefault(); setSearchOpen(p=>!p); }
+      if (e.key==='Escape') { setCmdOpen(false); setSearchOpen(false); setNotifOpen(false); }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
+  if (checking) return <div className="loading" style={{height:'100dvh'}}><div className="spinner"/><span>Loading…</span></div>;
   if (!user) return <Login onLogin={u => { setUser(u); api.get('/api/overview').then(setOverview); }} />;
 
   const h = overview?.health || 'green';
 
   const NAV = [
     { key:'overview',     icon:'◈', label:'Overview' },
-    { key:'tasks',        icon:'✓', label:'Tasks',      badge: overview?.blockedTasks > 0 ? overview.blockedTasks : null, badgeType:'badge-red-pill' },
-    { key:'leads',        icon:'◉', label:'Pipeline',   badge: overview?.activeLeads > 0  ? overview.activeLeads  : null, badgeType:'badge-blue-pill' },
-    { key:'bugs',         icon:'⬡', label:'Bugs',       badge: overview?.criticalBugs > 0 ? overview.criticalBugs : null, badgeType:'badge-red-pill' },
-    { key:'onboardings',  icon:'⬢', label:'Onboarding', badge: overview?.activeOnbs > 0   ? overview.activeOnbs   : null, badgeType:'badge-blue-pill' },
+    { key:'tasks',        icon:'✓', label:'Tasks',      badge: overview?.blockedTasks > 0 ? overview.blockedTasks : null, bt:'badge-red-pill' },
+    { key:'leads',        icon:'◉', label:'Pipeline',   badge: overview?.activeLeads > 0  ? overview.activeLeads  : null, bt:'badge-blue-pill' },
+    { key:'bugs',         icon:'⬡', label:'Bugs',       badge: overview?.criticalBugs > 0 ? overview.criticalBugs : null, bt:'badge-red-pill' },
+    { key:'onboardings',  icon:'⬢', label:'Onboarding', badge: overview?.activeOnbs > 0   ? overview.activeOnbs   : null, bt:'badge-blue-pill' },
+    { key:'revenue',      icon:'📊', label:'Revenue' },
+    { key:'activity',     icon:'⚡', label:'Activity' },
+    { key:'deploy',       icon:'🚀', label:'Deploy' },
     { key:'standups',     icon:'⊕', label:'Standups' },
     { key:'intelligence', icon:'◈', label:'Intelligence' },
     { key:'patterns',     icon:'◫', label:'Patterns' },
@@ -2124,18 +2798,21 @@ function App() {
   ];
 
   const MOBILE_NAV = [
-    { key:'overview',     icon:'⌂',  label:'Home' },
-    { key:'tasks',        icon:'✓',  label:'Tasks',    badge: overview?.blockedTasks > 0 },
-    { key:'leads',        icon:'◉',  label:'Pipeline' },
-    { key:'bugs',         icon:'⬡',  label:'Bugs',     badge: overview?.criticalBugs > 0 },
-    { key:'slackcontrol', icon:'▶',  label:'Slack' },
+    { key:'overview',    icon:'⌂',  label:'Home' },
+    { key:'tasks',       icon:'✓',  label:'Tasks',   badge: overview?.blockedTasks > 0 },
+    { key:'leads',       icon:'◉',  label:'Pipeline' },
+    { key:'bugs',        icon:'⬡',  label:'Bugs',    badge: overview?.criticalBugs > 0 },
+    { key:'slackcontrol',icon:'▶',  label:'Slack' },
   ];
 
   const TITLES = {
     overview:'Overview', tasks:'Tasks', leads:'Pipeline', bugs:'Bugs',
-    onboardings:'Onboarding', standups:'Standups', intelligence:'Intelligence',
-    patterns:'Patterns', slackcontrol:'Slack', commands:'Commands'
+    onboardings:'Onboarding', revenue:'Revenue', activity:'Activity Feed',
+    deploy:'Deploy', standups:'Standups', intelligence:'Intelligence',
+    patterns:'Patterns', slackcontrol:'Slack Control', commands:'Commands'
   };
+
+  const navigate = (p) => { setPage(p); setCmdOpen(false); setSearchOpen(false); };
 
   const renderPage = () => {
     switch(page) {
@@ -2144,6 +2821,9 @@ function App() {
       case 'leads':        return <Leads />;
       case 'bugs':         return <Bugs />;
       case 'onboardings':  return <Onboardings />;
+      case 'revenue':      return <Revenue />;
+      case 'activity':     return <Activity />;
+      case 'deploy':       return <Deploy />;
       case 'standups':     return <Standups />;
       case 'intelligence': return <Intelligence />;
       case 'patterns':     return <Patterns />;
@@ -2155,25 +2835,26 @@ function App() {
 
   return (
     <div className="app">
-      {/* Desktop sidebar */}
+      {/* Sidebar */}
       <div className="sidebar">
         <div className="sidebar-logo">
-          <div className="logo-wordmark">TITAN<span>.</span></div>
-          <div className="logo-sub">ClinicFlow Operations</div>
+          <div className="logo-icon">T</div>
+          <div className="logo-text">TITAN</div>
+          <span className="logo-badge">v2</span>
         </div>
 
         <div className="sidebar-section">Main</div>
-        {NAV.slice(0,6).map(n => (
-          <div key={n.key} className={`nav-item ${page===n.key?'active':''}`} onClick={() => setPage(n.key)}>
+        {NAV.slice(0,9).map(n=>(
+          <div key={n.key} className={`nav-item ${page===n.key?'active':''}`} onClick={()=>navigate(n.key)}>
             <span className="nav-icon">{n.icon}</span>
             {n.label}
-            {n.badge && <span className={`nav-badge ${n.badgeType}`}>{n.badge}</span>}
+            {n.badge&&<span className={`nav-badge ${n.bt}`}>{n.badge}</span>}
           </div>
         ))}
 
         <div className="sidebar-section">Intelligence</div>
-        {NAV.slice(6).map(n => (
-          <div key={n.key} className={`nav-item ${page===n.key?'active':''}`} onClick={() => setPage(n.key)}>
+        {NAV.slice(9).map(n=>(
+          <div key={n.key} className={`nav-item ${page===n.key?'active':''}`} onClick={()=>navigate(n.key)}>
             <span className="nav-icon">{n.icon}</span>
             {n.label}
           </div>
@@ -2187,19 +2868,39 @@ function App() {
               <div className="user-role">Admin</div>
             </div>
           </div>
-          <button className="logout-link" onClick={() => { api.clearToken(); setUser(null); }}>Sign out</button>
+          <div className="sidebar-actions">
+            <button className="sidebar-btn" onClick={() => setTheme(t=>t==='light'?'dark':'light')} title="Toggle theme">
+              {theme==='light'?'☾':'☀'} {theme==='light'?'Dark':'Light'}
+            </button>
+            <button className="sidebar-btn danger" onClick={()=>{api.clearToken();setUser(null);}}>⏻ Out</button>
+          </div>
         </div>
       </div>
 
-      {/* Main area */}
+      {/* Main */}
       <div className="main">
         <div className="topbar">
           <div className="topbar-title">{TITLES[page]}</div>
-          <div className={`health-chip ${h}`}>
-            <div className="health-dot" />
-            {h === 'green' ? 'Healthy' : h === 'yellow' ? 'Watch' : 'Critical'}
+
+          <div className="search-trigger" onClick={()=>setSearchOpen(true)}>
+            <span style={{fontSize:13}}>🔍</span>
+            <span>Search…</span>
+            <div className="search-kbd"><span className="kbd">⌘</span><span className="kbd">F</span></div>
           </div>
-          <Clock />
+
+          <button className="icon-btn" onClick={()=>setCmdOpen(true)} title="Command Palette ⌘K">⌘</button>
+
+          <div className={`health-chip ${h}`}>
+            <div className="health-dot"/>
+            {h==='green'?'Healthy':h==='yellow'?'Watch':'Critical'}
+          </div>
+
+          <button className="icon-btn" onClick={()=>setNotifOpen(p=>!p)} title="Notifications">
+            🔔
+            {unreadCount > 0 && <div className="notif-dot"/>}
+          </button>
+
+          <Clock/>
         </div>
 
         <div className="content">{renderPage()}</div>
@@ -2207,21 +2908,26 @@ function App() {
 
       {/* Mobile bottom nav */}
       <div className="bottom-nav">
-        {MOBILE_NAV.map(n => (
-          <div key={n.key} className={`bottom-nav-item ${page===n.key?'active':''}`} onClick={() => setPage(n.key)}>
-            {n.badge && <div className="bottom-nav-dot" />}
-            <div className="bottom-nav-icon">{n.icon}</div>
-            <div className="bottom-nav-label">{n.label}</div>
+        {MOBILE_NAV.map(n=>(
+          <div key={n.key} className={`bnav-item ${page===n.key?'active':''}`} onClick={()=>navigate(n.key)}>
+            {n.badge && <div className="bnav-badge"/>}
+            <div className="bnav-icon">{n.icon}</div>
+            <div className="bnav-label">{n.label}</div>
           </div>
         ))}
       </div>
 
-      <Toasts />
+      {/* Overlays */}
+      {cmdOpen    && <CommandPalette onClose={()=>setCmdOpen(false)} onNavigate={navigate} />}
+      {searchOpen && <Search onNavigate={navigate} onClose={()=>setSearchOpen(false)} />}
+      {notifOpen  && <NotifDrawer onClose={()=>setNotifOpen(false)} notifications={notifs} onClear={()=>setNotifs([])} />}
+
+      <Toasts/>
     </div>
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
 </html>
